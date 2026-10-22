@@ -1,6 +1,6 @@
 // The runner, as the admin: with the root token. Server code only.
 import { headers } from "next/headers"
-import { Runner } from "@zeroko/ui/lib/runner"
+import { Runner } from "@zeroko-io/commons/lib/runner"
 
 import { config } from "./config"
 

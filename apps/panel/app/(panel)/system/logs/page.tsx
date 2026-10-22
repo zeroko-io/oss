@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import { Page } from "@/components/page"
+import { Page } from "@zeroko-io/commons/components/page"
 import { SystemLogs } from "@/components/system"
 import { requireSession } from "@/lib/session"
 

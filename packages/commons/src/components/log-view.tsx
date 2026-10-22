@@ -4,11 +4,11 @@ import { ArrowDown } from "lucide-react"
 import * as React from "react"
 import { cn } from "cn"
 
-import { Segmented } from "@zeroko/ui/components/action"
-import { Button } from "@zeroko/ui/components/button"
-import { toast } from "@zeroko/ui/components/feedback"
-import { Input } from "@zeroko/ui/components/input"
-import { clock, plural } from "@zeroko/ui/lib/format"
+import { Segmented } from "@zeroko-io/commons/components/action"
+import { Button } from "@zeroko-io/commons/components/button"
+import { toast } from "@zeroko-io/commons/components/feedback"
+import { Input } from "@zeroko-io/commons/components/input"
+import { clock, plural } from "@zeroko-io/commons/lib/format"
 
 export type LogLine = {
   id: number

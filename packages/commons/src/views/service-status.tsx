@@ -1,5 +1,5 @@
-import { Status } from "@zeroko/ui/components/ledger"
-import type { ServiceStatus as State } from "@zeroko/ui/lib/runner"
+import { Status } from "@zeroko-io/commons/components/ledger"
+import type { ServiceStatus as State } from "@zeroko-io/commons/lib/runner"
 
 const states = {
   running: { tone: "ok", label: "Running" },

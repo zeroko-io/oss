@@ -5,8 +5,8 @@ import { ChevronRight } from "lucide-react"
 import * as React from "react"
 import { cn } from "cn"
 
-import { Button, buttonVariants } from "@zeroko/ui/components/button"
-import { toast } from "@zeroko/ui/components/feedback"
+import { Button, buttonVariants } from "@zeroko-io/commons/components/button"
+import { toast } from "@zeroko-io/commons/components/feedback"
 
 type ButtonProps = React.ComponentProps<typeof Button>
 

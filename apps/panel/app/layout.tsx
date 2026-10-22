@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono, Lora } from "next/font/google"
 import { cookies } from "next/headers"
 
-import "@zeroko/ui/globals.css"
-import { parseTheme, THEME_COOKIE, themeAttribute } from "@zeroko/ui/lib/theme"
-import { cn } from "@zeroko/ui/lib/utils"
+import "@zeroko-io/commons/globals.css"
+import { parseTheme, THEME_COOKIE, themeAttribute } from "@zeroko-io/commons/lib/theme"
+import { cn } from "@zeroko-io/commons/lib/utils"
 
 const sans = Geist({ subsets: ["latin"], variable: "--font-sans" })
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })

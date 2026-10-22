@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
-import { Page } from "@/components/page"
-import { ServiceLogs } from "@/components/service/logs"
+import { Page } from "@zeroko-io/commons/components/page"
+import { ServiceLogs } from "@zeroko-io/commons/views/service/logs"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = { title: "Logs" }

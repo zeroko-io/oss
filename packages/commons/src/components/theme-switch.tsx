@@ -4,8 +4,8 @@ import * as React from "react"
 import { cn } from "cn"
 import { Monitor, Moon, Sun, type LucideIcon } from "lucide-react"
 
-import { Indicator } from "@zeroko/ui/components/action"
-import { THEME_COOKIE, type Theme } from "@zeroko/ui/lib/theme"
+import { Indicator } from "@zeroko-io/commons/components/action"
+import { THEME_COOKIE, type Theme } from "@zeroko-io/commons/lib/theme"
 
 const choices: { value: Theme; label: string; Icon: LucideIcon }[] = [
   { value: "system", label: "Follow the system", Icon: Monitor },

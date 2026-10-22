@@ -8,12 +8,12 @@ import {
   ErrorDetails,
   FileButton,
   Segmented,
-} from "@zeroko/ui/components/action"
-import { Button } from "@zeroko/ui/components/button"
-import { confirm, toast } from "@zeroko/ui/components/feedback"
-import { Input } from "@zeroko/ui/components/input"
-import { Mono, SectionTitle } from "@zeroko/ui/components/ledger"
-import { formatBytes, plural, relative } from "@zeroko/ui/lib/format"
+} from "@zeroko-io/commons/components/action"
+import { Button } from "@zeroko-io/commons/components/button"
+import { confirm, toast } from "@zeroko-io/commons/components/feedback"
+import { Input } from "@zeroko-io/commons/components/input"
+import { Mono, SectionTitle } from "@zeroko-io/commons/components/ledger"
+import { formatBytes, plural, relative } from "@zeroko-io/commons/lib/format"
 import type {
   FileList,
   Job,
@@ -22,10 +22,10 @@ import type {
   ServiceDetail,
   Store,
   Table,
-} from "@zeroko/ui/lib/runner"
-import { cn } from "@zeroko/ui/lib/utils"
+} from "@zeroko-io/commons/lib/runner"
+import { cn } from "@zeroko-io/commons/lib/utils"
 
-import { runner } from "@/lib/browser"
+import { useRunner } from "@zeroko-io/commons/components/runner"
 
 /** Loads something on mount and when deps change; reload() loads it again.
  * Errors go to a toast. */
@@ -60,6 +60,7 @@ export function DataExplorer({
   service: ServiceDetail
   stores: Store[]
 }) {
+  const runner = useRunner()
   const router = useRouter()
   const [cleared, setCleared] = useState(0)
   const bindings = service.bindings.filter(
@@ -161,6 +162,7 @@ const quote = (name: string) => `"${name.replaceAll('"', '""')}"`
 
 /** A db binding's tables, and a place to query it. */
 function Database({ service, binding }: { service: string; binding: string }) {
+  const runner = useRunner()
   const { data: tables, reload } = useLoad(
     () => runner.tables(service, binding),
     [service, binding]
@@ -310,6 +312,7 @@ function Files({
   binding: string
   onChange: () => void
 }) {
+  const runner = useRunner()
   const [prefix, setPrefix] = useState("")
   const [more, setMore] = useState<FileList | null>(null)
   const { data, reload } = useLoad(() => {
@@ -439,6 +442,7 @@ const statuses = ["", "queued", "running", "dead"] as const
 
 /** The service's jobs, and a way to send one. */
 function Jobs({ service }: { service: ServiceDetail }) {
+  const runner = useRunner()
   const [status, setStatus] = useState<(typeof statuses)[number]>("")
   const { data, reload } = useLoad(
     () =>
@@ -616,6 +620,7 @@ function Jobs({ service }: { service: ServiceDetail }) {
 
 /** The open connections, and a way to publish to a channel. */
 function Realtime({ service }: { service: ServiceDetail }) {
+  const runner = useRunner()
   const [busy, setBusy] = useState(false)
   return (
     <div className="flex flex-col gap-3">

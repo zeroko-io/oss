@@ -8,21 +8,21 @@ import {
   ErrorDetails,
   FileButton,
   Indicator,
-} from "@zeroko/ui/components/action"
-import { Button } from "@zeroko/ui/components/button"
-import { confirm, toast } from "@zeroko/ui/components/feedback"
-import { Input } from "@zeroko/ui/components/input"
-import { Mono } from "@zeroko/ui/components/ledger"
-import { relative } from "@zeroko/ui/lib/format"
+} from "@zeroko-io/commons/components/action"
+import { Button } from "@zeroko-io/commons/components/button"
+import { confirm, toast } from "@zeroko-io/commons/components/feedback"
+import { Input } from "@zeroko-io/commons/components/input"
+import { Mono } from "@zeroko-io/commons/components/ledger"
+import { relative } from "@zeroko-io/commons/lib/format"
 import type {
   Deployment,
   DeploymentView,
   ServiceDetail,
   Source,
-} from "@zeroko/ui/lib/runner"
-import { cn } from "@zeroko/ui/lib/utils"
+} from "@zeroko-io/commons/lib/runner"
+import { cn } from "@zeroko-io/commons/lib/utils"
 
-import { runner } from "@/lib/browser"
+import { useRunner } from "@zeroko-io/commons/components/runner"
 
 const SHOWN = 8
 
@@ -33,6 +33,7 @@ export function Versions({
   service: ServiceDetail
   deployments: DeploymentView[]
 }) {
+  const runner = useRunner()
   const router = useRouter()
   const [all, setAll] = useState(false)
   const [writing, setWriting] = useState(false)
@@ -152,6 +153,7 @@ function VersionRow({
   onToggle: () => void
   onActivate: () => Promise<void>
 }) {
+  const runner = useRunner()
   const [source, setSource] = useState<Source | null>(null)
   const [error, setError] = useState("")
   // Drawn once opened, and kept, so closing can animate too.
@@ -321,6 +323,7 @@ function QuickDeploy({
   service: ServiceDetail
   onDone: (d: Deployment) => void
 }) {
+  const runner = useRunner()
   const [busy, setBusy] = useState(false)
   const m = service.manifest
   return (

@@ -1,7 +1,7 @@
 "use client"
 
-import { Button } from "@zeroko/ui/components/button"
-import { PageHeader } from "@zeroko/ui/components/ledger"
+import { Button } from "@zeroko-io/commons/components/button"
+import { PageHeader } from "@zeroko-io/commons/components/ledger"
 
 export default function PanelError({
   reset,

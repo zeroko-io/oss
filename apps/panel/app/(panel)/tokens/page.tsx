@@ -6,11 +6,11 @@ import {
   Td,
   Th,
   Tr,
-} from "@zeroko/ui/components/ledger"
-import { day, relative } from "@zeroko/ui/lib/format"
+} from "@zeroko-io/commons/components/ledger"
+import { day, relative } from "@zeroko-io/commons/lib/format"
 
-import { CreateToken, RevokeToken } from "@/components/create-token"
-import { Page } from "@/components/page"
+import { CreateToken, RevokeToken } from "@zeroko-io/commons/views/tokens"
+import { Page } from "@zeroko-io/commons/components/page"
 import { publicUrl, runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 

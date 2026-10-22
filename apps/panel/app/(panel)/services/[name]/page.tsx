@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { ArrowRight } from "lucide-react"
-import { CopyButton } from "@zeroko/ui/components/copy-button"
+import { CopyButton } from "@zeroko-io/commons/components/copy-button"
 import {
   Fact,
   Facts,
@@ -11,7 +11,7 @@ import {
   SectionTitle,
   Stat,
   Stats,
-} from "@zeroko/ui/components/ledger"
+} from "@zeroko-io/commons/components/ledger"
 import {
   bytesParts,
   clock,
@@ -19,12 +19,12 @@ import {
   duration,
   formatBytes,
   relative,
-} from "@zeroko/ui/lib/format"
-import type { LogEntry } from "@zeroko/ui/lib/runner"
+} from "@zeroko-io/commons/lib/format"
+import type { LogEntry } from "@zeroko-io/commons/lib/runner"
 
-import { TopLink } from "@/components/links"
-import { Page } from "@/components/page"
-import { RunCron } from "@/components/service/overview"
+import { TopLink } from "@zeroko-io/commons/components/navigation"
+import { Page } from "@zeroko-io/commons/components/page"
+import { RunCron } from "@zeroko-io/commons/views/service/overview"
 import { runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 

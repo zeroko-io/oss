@@ -3,8 +3,8 @@
 import * as React from "react"
 import { cn } from "cn"
 
-import { formatNumber, latency, plural } from "@zeroko/ui/lib/format"
-import type { Metrics } from "@zeroko/ui/lib/runner"
+import { formatNumber, latency, plural } from "@zeroko-io/commons/lib/format"
+import type { Metrics } from "@zeroko-io/commons/lib/runner"
 
 function RequestChart({
   data,

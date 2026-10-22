@@ -37,7 +37,7 @@ Changing the token or the password signs the admin out.
 
 - `apps/panel`: the panel, a Next.js app. `skill.md` is the skill's
   template.
-- `packages/ui`: `@zeroko/ui`, Zeroko's look, "Ledger" (the theme tokens and
+- `packages/commons`: `@zeroko-io/commons`, Zeroko's look, "Ledger" (the theme tokens and
   components), and a client for the runner's API; shared with Zeroko's
   other panels.
 
@@ -58,7 +58,7 @@ npm run dev        # the panel at http://localhost:3000
 npm run typecheck && npm run lint && npm run build
 ```
 
-Add a shadcn component to `@zeroko/ui`:
+Add a shadcn component to `@zeroko-io/commons`:
 
 ```sh
 npx shadcn@latest add dialog -c apps/panel

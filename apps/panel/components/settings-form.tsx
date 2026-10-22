@@ -2,13 +2,13 @@
 
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Button } from "@zeroko/ui/components/button"
-import { confirm, toast } from "@zeroko/ui/components/feedback"
-import { Input, Select } from "@zeroko/ui/components/input"
-import { FieldRow } from "@zeroko/ui/components/ledger"
-import type { Settings } from "@zeroko/ui/lib/runner"
+import { Button } from "@zeroko-io/commons/components/button"
+import { confirm, toast } from "@zeroko-io/commons/components/feedback"
+import { Input, Select } from "@zeroko-io/commons/components/input"
+import { FieldRow } from "@zeroko-io/commons/components/ledger"
+import type { Settings } from "@zeroko-io/commons/lib/runner"
 
-import { runner } from "@/lib/browser"
+import { useRunner } from "@zeroko-io/commons/components/runner"
 
 function NumberField({
   name,
@@ -44,6 +44,7 @@ function NumberField({
 /** The runner's settings. Saving restarts it in place, so the form waits
  * for it to come back before drawing the page again. */
 export function SettingsForm({ settings: s }: { settings: Settings }) {
+  const runner = useRunner()
   const router = useRouter()
   const [busy, setBusy] = useState(false)
   return (

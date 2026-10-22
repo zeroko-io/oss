@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
-import { Page } from "@/components/page"
-import { DataExplorer } from "@/components/service/data"
+import { Page } from "@zeroko-io/commons/components/page"
+import { DataExplorer } from "@zeroko-io/commons/views/service/data"
 import { runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 

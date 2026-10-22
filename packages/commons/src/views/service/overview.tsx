@@ -1,9 +1,9 @@
 "use client"
 
-import { ActionButton } from "@zeroko/ui/components/action"
-import { toast } from "@zeroko/ui/components/feedback"
+import { ActionButton } from "@zeroko-io/commons/components/action"
+import { toast } from "@zeroko-io/commons/components/feedback"
 
-import { runner } from "@/lib/browser"
+import { useRunner } from "@zeroko-io/commons/components/runner"
 
 /** Queues a cron's job now. */
 export function RunCron({
@@ -13,6 +13,7 @@ export function RunCron({
   service: string
   schedule: string
 }) {
+  const runner = useRunner()
   return (
     <ActionButton
       variant="link"

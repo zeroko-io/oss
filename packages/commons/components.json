@@ -11,11 +11,11 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@zeroko/ui/components",
-    "utils": "@zeroko/ui/lib/utils",
-    "hooks": "@zeroko/ui/hooks",
-    "lib": "@zeroko/ui/lib",
-    "ui": "@zeroko/ui/components"
+    "components": "@zeroko-io/commons/components",
+    "utils": "@zeroko-io/commons/lib/utils",
+    "hooks": "@zeroko-io/commons/hooks",
+    "lib": "@zeroko-io/commons/lib",
+    "ui": "@zeroko-io/commons/components"
   },
   "rtl": false,
   "menuColor": "default",

@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { FileButton } from "@zeroko/ui/components/action"
-import { Button } from "@zeroko/ui/components/button"
-import { confirm, toast } from "@zeroko/ui/components/feedback"
-import { SectionTitle } from "@zeroko/ui/components/ledger"
-import { LogView } from "@zeroko/ui/components/log-view"
+import { FileButton } from "@zeroko-io/commons/components/action"
+import { Button } from "@zeroko-io/commons/components/button"
+import { confirm, toast } from "@zeroko-io/commons/components/feedback"
+import { SectionTitle } from "@zeroko-io/commons/components/ledger"
+import { LogView } from "@zeroko-io/commons/components/log-view"
 
-import { runner } from "@/lib/browser"
+import { useRunner } from "@zeroko-io/commons/components/runner"
 
 const levels = [
   ["info", "Info"],
@@ -35,6 +35,7 @@ function parseLogfmt(line: string): Record<string, string> {
 
 /** The runner's own log, polled every two seconds. */
 export function SystemLogs() {
+  const runner = useRunner()
   return (
     <LogView
       levels={levels}
@@ -61,6 +62,7 @@ export function SystemLogs() {
 
 /** Downloads everything the runner holds, and restores a download. */
 export function Backups() {
+  const runner = useRunner()
   const [restoring, setRestoring] = useState(false)
   return (
     <div className="flex flex-col">

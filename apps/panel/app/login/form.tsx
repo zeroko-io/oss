@@ -1,8 +1,8 @@
 "use client"
 
 import { useActionState } from "react"
-import { Button } from "@zeroko/ui/components/button"
-import { Input } from "@zeroko/ui/components/input"
+import { Button } from "@zeroko-io/commons/components/button"
+import { Input } from "@zeroko-io/commons/components/input"
 
 import { signIn } from "@/lib/actions"
 

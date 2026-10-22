@@ -2,14 +2,15 @@
 
 import { ArrowUpRight } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { ActionButton } from "@zeroko/ui/components/action"
-import { Button } from "@zeroko/ui/components/button"
-import { confirm, toast } from "@zeroko/ui/components/feedback"
-import type { Service } from "@zeroko/ui/lib/runner"
+import { ActionButton } from "@zeroko-io/commons/components/action"
+import { Button } from "@zeroko-io/commons/components/button"
+import { confirm, toast } from "@zeroko-io/commons/components/feedback"
+import type { Service } from "@zeroko-io/commons/lib/runner"
 
-import { runner } from "@/lib/browser"
+import { useRunner } from "@zeroko-io/commons/components/runner"
 
 export function ServiceActions({ service }: { service: Service }) {
+  const runner = useRunner()
   const router = useRouter()
   const live = service.status !== "not_deployed"
   return (

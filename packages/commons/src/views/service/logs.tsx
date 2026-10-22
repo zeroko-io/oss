@@ -1,8 +1,8 @@
 "use client"
 
-import { LogView } from "@zeroko/ui/components/log-view"
+import { LogView } from "@zeroko-io/commons/components/log-view"
 
-import { runner } from "@/lib/browser"
+import { useRunner } from "@zeroko-io/commons/components/runner"
 
 const sources = [
   ["request", "Requests"],
@@ -13,6 +13,7 @@ const sources = [
 
 /** Tails a service's log: the newest lines, then waits for more. */
 export function ServiceLogs({ name }: { name: string }) {
+  const runner = useRunner()
   return (
     <LogView
       sources={sources}

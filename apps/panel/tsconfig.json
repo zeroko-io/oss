@@ -3,7 +3,7 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./*"],
-      "@zeroko/ui/*": ["../../packages/ui/src/*"]
+      "@zeroko-io/commons/*": ["../../packages/commons/src/*"]
     },
     "plugins": [
       {

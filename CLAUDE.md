@@ -3,7 +3,7 @@
 # Zeroko OSS
 
 The open source panel for one Zeroko runner (`zeroko-io/runner`), and
-`@zeroko/ui`, the look and components shared with the commercial panel
+`@zeroko-io/commons`, the look and components shared with the commercial panel
 (`zeroko-io/cloud`). Develop on Windows with Node and npm; no WSL.
 
 ## Principles
@@ -16,9 +16,10 @@ The open source panel for one Zeroko runner (`zeroko-io/runner`), and
   errors reach the page (as toasts). Server Actions are only for signing in
   and out.
 - Anything both panels need (theme, components, views of a service, the
-  runner's API client) goes in `packages/ui`, not in `apps/panel`.
+  runner's API client) goes in `packages/commons`, not in `apps/panel`.
+  Views take the runner from `useRunner()`, never a panel's own module.
 - One look, "Ledger": colors, radii and fonts are the tokens in
-  `packages/ui/src/styles/globals.css`, each `light-dark()`: the theme follows
+  `packages/commons/src/styles/globals.css`, each `light-dark()`: the theme follows
   the system unless the `zeroko_theme` cookie fixes it. Hairline rules, not
   cards; a serif (Lora) for titles and figures, Geist for the interface,
   Geist Mono for labels, names and logs. Components use the tokens, never raw
@@ -40,11 +41,14 @@ The open source panel for one Zeroko runner (`zeroko-io/runner`), and
 - Motion: pages enter through `<Page>` (React's `ViewTransition`); links
   into something pass `transitionTypes={["nav-forward"]}`, links back
   `["nav-back"]`. Keep animations short and honor reduced motion.
-- `packages/ui`: `@zeroko/ui`; `src/styles/globals.css` (tokens),
-  `src/components` (`ledger.tsx` has the look's pieces; `feedback.tsx` toasts
-  and confirm; `action.tsx`, `log-view.tsx`, `chart.tsx`, `theme-switch.tsx`),
-  `src/lib/runner.ts` (the API client and types, for server and browser),
-  `src/lib/format.ts`, `src/lib/theme.ts`.
+- `packages/commons`: `@zeroko-io/commons`, published to GitHub Packages
+  for cloud. `src/styles/globals.css` (tokens); `src/components`: the look
+  (`ledger.tsx`), feedback (toasts, confirm), actions, the log view, the
+  chart, navigation (links that scroll first, sub-tabs), `page.tsx` (view
+  transitions), `runner.tsx` (`RunnerProvider`, `useRunner`: how the views
+  reach the runner from the browser); `src/views`: the screens of a service,
+  the services table and tokens; `src/lib`: the runner client and types,
+  formats, the theme.
 - `packages/eslint-config`, `packages/typescript-config`: shared configs.
 
 ## Commands
@@ -53,5 +57,5 @@ The open source panel for one Zeroko runner (`zeroko-io/runner`), and
 npm install
 npm run dev
 npm run typecheck && npm run lint && npm run build
-npx shadcn@latest add <component> -c apps/panel   # into packages/ui
+npx shadcn@latest add <component> -c apps/panel   # into packages/commons
 ```

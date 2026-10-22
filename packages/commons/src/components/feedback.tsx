@@ -6,7 +6,7 @@
 import * as React from "react"
 import { cn } from "cn"
 
-import { Button } from "@zeroko/ui/components/button"
+import { Button } from "@zeroko-io/commons/components/button"
 
 type Toast = { id: number; text: string; error: boolean; leaving?: boolean }
 

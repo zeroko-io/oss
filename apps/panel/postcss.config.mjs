@@ -1,1 +1,1 @@
-export { default } from "@zeroko/ui/postcss.config";
+export { default } from "@zeroko-io/commons/postcss.config";

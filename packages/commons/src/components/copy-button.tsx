@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { Button } from "@zeroko/ui/components/button"
+import { Button } from "@zeroko-io/commons/components/button"
 
 /** A button that copies text and says so for a moment. */
 function CopyButton({

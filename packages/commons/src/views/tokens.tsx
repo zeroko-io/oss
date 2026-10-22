@@ -2,15 +2,16 @@
 
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { ActionButton } from "@zeroko/ui/components/action"
-import { Button } from "@zeroko/ui/components/button"
-import { CopyButton } from "@zeroko/ui/components/copy-button"
-import { confirm, toast } from "@zeroko/ui/components/feedback"
-import { Input, Select } from "@zeroko/ui/components/input"
+import { ActionButton } from "@zeroko-io/commons/components/action"
+import { Button } from "@zeroko-io/commons/components/button"
+import { CopyButton } from "@zeroko-io/commons/components/copy-button"
+import { confirm, toast } from "@zeroko-io/commons/components/feedback"
+import { Input, Select } from "@zeroko-io/commons/components/input"
 
-import { runner } from "@/lib/browser"
+import { useRunner } from "@zeroko-io/commons/components/runner"
 
 export function CreateToken({ skill }: { skill: string }) {
+  const runner = useRunner()
   const router = useRouter()
   const [secret, setSecret] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -94,6 +95,7 @@ export function CreateToken({ skill }: { skill: string }) {
 }
 
 export function RevokeToken({ id, name }: { id: string; name: string }) {
+  const runner = useRunner()
   const router = useRouter()
   return (
     <ActionButton

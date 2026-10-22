@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
-import { PageHeader, Stat, Stats } from "@zeroko/ui/components/ledger"
-import { bytesParts, formatNumber } from "@zeroko/ui/lib/format"
+import { PageHeader, Stat, Stats } from "@zeroko-io/commons/components/ledger"
+import { bytesParts, formatNumber } from "@zeroko-io/commons/lib/format"
 
-import { TopLink } from "@/components/links"
-import { AutoRefresh } from "@/components/auto-refresh"
-import { Page } from "@/components/page"
-import { NewService, ServicesTable } from "@/components/services-table"
+import { TopLink } from "@zeroko-io/commons/components/navigation"
+import { AutoRefresh } from "@zeroko-io/commons/components/auto-refresh"
+import { Page } from "@zeroko-io/commons/components/page"
+import { NewService, ServicesTable } from "@zeroko-io/commons/views/services"
 import { publicUrl, runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 

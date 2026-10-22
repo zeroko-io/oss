@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { Kicker, Logo } from "@zeroko/ui/components/ledger"
+import { Kicker, Logo } from "@zeroko-io/commons/components/ledger"
 
 import { publicUrl } from "@/lib/runner"
 import { signedIn } from "@/lib/session"

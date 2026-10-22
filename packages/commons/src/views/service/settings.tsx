@@ -6,15 +6,15 @@ import {
   ActionButton,
   FileButton,
   Segmented,
-} from "@zeroko/ui/components/action"
-import { Button } from "@zeroko/ui/components/button"
-import { confirm, toast } from "@zeroko/ui/components/feedback"
-import { Input } from "@zeroko/ui/components/input"
-import { Meter, Mono, SectionTitle } from "@zeroko/ui/components/ledger"
-import { formatBytes, plural, relative } from "@zeroko/ui/lib/format"
-import type { Secret, ServiceDetail } from "@zeroko/ui/lib/runner"
+} from "@zeroko-io/commons/components/action"
+import { Button } from "@zeroko-io/commons/components/button"
+import { confirm, toast } from "@zeroko-io/commons/components/feedback"
+import { Input } from "@zeroko-io/commons/components/input"
+import { Meter, Mono, SectionTitle } from "@zeroko-io/commons/components/ledger"
+import { formatBytes, plural, relative } from "@zeroko-io/commons/lib/format"
+import type { Secret, ServiceDetail } from "@zeroko-io/commons/lib/runner"
 
-import { runner } from "@/lib/browser"
+import { useRunner } from "@zeroko-io/commons/components/runner"
 
 /** A section of the settings: a title and what it is about on the left,
  * its controls on the right. */
@@ -98,6 +98,7 @@ function Egress({
   service: ServiceDetail
   allowed: boolean
 }) {
+  const runner = useRunner()
   const router = useRouter()
   const [mode, setMode] = useState<(typeof modes)[number][0]>(
     service.egress.includes("*")
@@ -163,6 +164,7 @@ function Egress({
 }
 
 function Disk({ service }: { service: ServiceDetail }) {
+  const runner = useRunner()
   const router = useRouter()
   const { busy, onSubmit } = useSubmit(async (f) => {
     await runner.setLimits(service.name, { disk_mb: Number(f.get("mb")) || 0 })
@@ -206,6 +208,7 @@ function Disk({ service }: { service: ServiceDetail }) {
 const namePattern = "[A-Za-z_][A-Za-z0-9_]*"
 
 function Vars({ service }: { service: ServiceDetail }) {
+  const runner = useRunner()
   const router = useRouter()
   const { busy, onSubmit } = useSubmit(async (f, form) => {
     await runner.putVar(
@@ -283,6 +286,7 @@ function Secrets({
   service: ServiceDetail
   secrets: Secret[]
 }) {
+  const runner = useRunner()
   const router = useRouter()
   const { busy, onSubmit } = useSubmit(async (f, form) => {
     await runner.putSecret(
@@ -351,6 +355,7 @@ function Secrets({
 }
 
 function Transfer({ service }: { service: ServiceDetail }) {
+  const runner = useRunner()
   const router = useRouter()
   return (
     <Section
@@ -386,6 +391,7 @@ function Transfer({ service }: { service: ServiceDetail }) {
 }
 
 function Danger({ service }: { service: ServiceDetail }) {
+  const runner = useRunner()
   const router = useRouter()
   return (
     <Section title="Danger zone" about="These can't be undone." danger>

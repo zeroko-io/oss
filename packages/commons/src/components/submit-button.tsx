@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useFormStatus } from "react-dom"
 
-import { Button } from "@zeroko/ui/components/button"
+import { Button } from "@zeroko-io/commons/components/button"
 
 /** A form's submit button that says what is happening while its action
  * runs, and can't be pressed twice. */

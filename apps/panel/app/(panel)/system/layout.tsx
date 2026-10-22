@@ -1,8 +1,8 @@
 import { ArrowUpRight } from "lucide-react"
-import { PageHeader } from "@zeroko/ui/components/ledger"
+import { PageHeader } from "@zeroko-io/commons/components/ledger"
 
-import { Page } from "@/components/page"
-import { SubTabs } from "@/components/sub-tabs"
+import { Page } from "@zeroko-io/commons/components/page"
+import { SubTabs } from "@zeroko-io/commons/components/navigation"
 import { runner } from "@/lib/runner"
 import { updates } from "@/lib/updates"
 import { requireSession } from "@/lib/session"

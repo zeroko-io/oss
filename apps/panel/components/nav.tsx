@@ -1,9 +1,9 @@
 "use client"
 
 import { usePathname } from "next/navigation"
-import { TabLink, TabNav } from "@zeroko/ui/components/ledger"
+import { TabLink, TabNav } from "@zeroko-io/commons/components/ledger"
 
-import { Pending, TopLink } from "@/components/links"
+import { Pending, TopLink } from "@zeroko-io/commons/components/navigation"
 
 const tabs = [
   {
