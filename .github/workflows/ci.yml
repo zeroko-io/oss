@@ -75,7 +75,10 @@ jobs:
           cd packages/commons
           base=$(node -p 'require("./package.json").version')
           npm version "$base-dev.$GITHUB_RUN_NUMBER" --no-git-tag-version
-          npm publish --tag dev
+          # npm 11 asks the registry for the package before publishing and
+          # takes GitHub Packages' 404 for a package not published yet as an
+          # error; npm 10 just publishes.
+          npx -y npm@10.9.9 publish --tag dev
 
   # The image is built on amd64 for both platforms: its last stage only
   # copies JavaScript, so arm64 needs no emulation.
@@ -221,7 +224,7 @@ jobs:
         run: |
           cd packages/commons
           npm version "${{ steps.check.outputs.version }}" --no-git-tag-version
-          npm publish
+          npx -y npm@10.9.9 publish
       - name: GitHub release
         run: |
           v="${{ steps.check.outputs.version }}"
