@@ -1,5 +1,6 @@
 "use client"
 
+import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
@@ -332,7 +333,7 @@ function Files({
         {prefix && (
           <>
             <Button variant="link" size="sm" onClick={() => setPrefix(up)}>
-              ← {up || "/"}
+              <ArrowLeft aria-hidden /> {up || "/"}
             </Button>
             <Mono className="text-foreground">{prefix}</Mono>
           </>

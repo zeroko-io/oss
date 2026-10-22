@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import Link from "next/link"
+import { ArrowRight } from "lucide-react"
 import { CopyButton } from "@zeroko/ui/components/copy-button"
 import {
   Fact,
@@ -22,6 +22,7 @@ import {
 } from "@zeroko/ui/lib/format"
 import type { LogEntry } from "@zeroko/ui/lib/runner"
 
+import { TopLink } from "@/components/links"
 import { Page } from "@/components/page"
 import { RunCron } from "@/components/service/overview"
 import { runner } from "@/lib/runner"
@@ -136,12 +137,12 @@ export default async function ServiceOverview(
           <section className="flex flex-col gap-4">
             <div className="flex items-baseline justify-between">
               <SectionTitle>Recent logs</SectionTitle>
-              <Link
+              <TopLink
                 href={`${base}/logs`}
-                className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase hover:text-foreground"
+                className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase transition-colors hover:text-foreground"
               >
-                Tail the log →
-              </Link>
+                Tail the log <ArrowRight aria-hidden className="size-3" />
+              </TopLink>
             </div>
             <LogLines lines={lines} />
           </section>

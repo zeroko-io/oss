@@ -29,11 +29,7 @@ export function SignInForm() {
         {pending ? "Signing in" : "Continue"}
       </Button>
       <p className="text-[13px] leading-normal text-faint">
-        Set with{" "}
-        <span className="font-mono text-muted-foreground">
-          ZEROKO_PANEL_PASSWORD
-        </span>
-        . The runner&apos;s token never leaves the server.
+        The admin password set when the panel was installed.
       </p>
     </form>
   )

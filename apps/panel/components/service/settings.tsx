@@ -426,7 +426,8 @@ function Danger({ service }: { service: ServiceDetail }) {
                 return
               await runner.deleteService(service.name)
               toast(`${service.name} deleted`)
-              router.push("/", { transitionTypes: ["nav-back"] })
+              window.scrollTo({ top: 0 })
+              router.push("/", { scroll: false, transitionTypes: ["nav-back"] })
             }}
           >
             Delete service

@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Button } from "@zeroko/ui/components/button"
@@ -10,6 +9,7 @@ import { Mono, Table, Td, Th, Tr } from "@zeroko/ui/components/ledger"
 import { formatNumber, relative } from "@zeroko/ui/lib/format"
 import type { Service } from "@zeroko/ui/lib/runner"
 
+import { TopLink } from "@/components/links"
 import { ServiceName } from "@/components/page"
 import { ServiceStatus } from "@/components/service-status"
 import { runner } from "@/lib/browser"
@@ -58,13 +58,13 @@ export function ServicesTable({
             {shown.map((s) => (
               <Tr key={s.id} className="group relative">
                 <Td>
-                  <Link
+                  <TopLink
                     href={`/services/${encodeURIComponent(s.name)}`}
                     transitionTypes={["nav-forward"]}
                     className="font-medium underline-offset-4 group-hover:underline after:absolute after:inset-0"
                   >
                     <ServiceName id={s.id}>{s.name}</ServiceName>
-                  </Link>
+                  </TopLink>
                   {s.latest?.status === "failed" && (
                     <span className="ml-3 font-mono text-[11px] text-destructive">
                       last deploy failed
@@ -134,7 +134,9 @@ export function NewService({ domain }: { domain: string }) {
         try {
           const s = await runner.createService(name)
           toast(`${s.name} created`)
+          window.scrollTo({ top: 0 })
           router.push(`/services/${encodeURIComponent(s.name)}`, {
+            scroll: false,
             transitionTypes: ["nav-forward"],
           })
         } catch (err) {

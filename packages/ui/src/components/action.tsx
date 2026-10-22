@@ -1,6 +1,7 @@
 "use client"
 
 // Buttons that run something: busy while it runs, its error as a toast.
+import { ChevronRight } from "lucide-react"
 import * as React from "react"
 import { cn } from "cn"
 
@@ -111,6 +112,7 @@ function Segmented<T extends string>({
   label: string
   className?: string
 }) {
+  const name = useTransitionName("seg")
   return (
     <div
       role="radiogroup"
@@ -126,18 +128,40 @@ function Segmented<T extends string>({
           type="button"
           role="radio"
           aria-checked={v === value}
-          onClick={() => onChange(v)}
+          // In a transition, so the indicator slides to the new option.
+          onClick={() => React.startTransition(() => onChange(v))}
           className={cn(
-            "inline-flex h-6 items-center gap-1.5 rounded-sm px-2.5 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+            "relative inline-flex h-6 items-center gap-1.5 rounded-sm px-2.5 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
             v === value
-              ? "bg-secondary text-foreground"
+              ? "text-foreground"
               : "text-muted-foreground hover:text-foreground"
           )}
         >
-          {text}
+          {v === value && <Pill name={name} />}
+          <span className="relative inline-flex items-center gap-1.5">
+            {text}
+          </span>
         </button>
       ))}
     </div>
+  )
+}
+
+/** A view transition name of its own for each instance of a component. */
+function useTransitionName(prefix: string): string {
+  return `zk-${prefix}-${React.useId().replace(/[^\w-]/g, "")}`
+}
+
+/** The background of the chosen option, one element that slides between
+ * options when the choice changes in a transition. */
+function Pill({ name, className }: { name: string; className?: string }) {
+  return (
+    <React.ViewTransition name={name} share="pill" default="none">
+      <span
+        aria-hidden
+        className={cn("absolute inset-0 rounded-sm bg-secondary", className)}
+      />
+    </React.ViewTransition>
   )
 }
 
@@ -160,7 +184,7 @@ function ErrorDetails({
           aria-hidden
           className="text-faint transition-transform duration-200 group-open:rotate-90"
         >
-          ›
+          <ChevronRight className="size-3 translate-y-px" />
         </span>
         {first}
       </summary>
@@ -171,4 +195,11 @@ function ErrorDetails({
   )
 }
 
-export { ActionButton, ErrorDetails, FileButton, Segmented }
+export {
+  ActionButton,
+  ErrorDetails,
+  FileButton,
+  Pill,
+  Segmented,
+  useTransitionName,
+}

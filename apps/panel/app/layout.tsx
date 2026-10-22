@@ -34,6 +34,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       data-theme={themeAttribute(theme)}
       className={cn(
         "antialiased",
@@ -42,7 +43,8 @@ export default async function RootLayout({
         serif.variable
       )}
     >
-      <body>{children}</body>
+      {/* Browser extensions add attributes to <body> before React loads. */}
+      <body suppressHydrationWarning>{children}</body>
     </html>
   )
 }

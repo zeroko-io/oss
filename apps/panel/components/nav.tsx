@@ -1,8 +1,9 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { TabLink, TabNav } from "@zeroko/ui/components/ledger"
+
+import { Pending, TopLink } from "@/components/links"
 
 const tabs = [
   {
@@ -28,7 +29,10 @@ export function Nav({ className }: { className?: string }) {
     <TabNav className={className}>
       {tabs.map((t) => (
         <TabLink key={t.href} asChild active={t.match(path)}>
-          <Link href={t.href}>{t.label}</Link>
+          <TopLink href={t.href}>
+            {t.label}
+            <Pending />
+          </TopLink>
         </TabLink>
       ))}
     </TabNav>

@@ -1,5 +1,6 @@
 "use client"
 
+import { ArrowUpRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { ActionButton } from "@zeroko/ui/components/action"
 import { Button } from "@zeroko/ui/components/button"
@@ -40,7 +41,7 @@ export function ServiceActions({ service }: { service: Service }) {
       {live && service.url && (
         <Button asChild>
           <a href={service.url} target="_blank" rel="noreferrer">
-            Open ↗
+            Open <ArrowUpRight aria-hidden />
           </a>
         </Button>
       )}

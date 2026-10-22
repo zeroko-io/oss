@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { PageHeader, Stat, Stats } from "@zeroko/ui/components/ledger"
 import { bytesParts, formatNumber } from "@zeroko/ui/lib/format"
 
+import { TopLink } from "@/components/links"
 import { AutoRefresh } from "@/components/auto-refresh"
 import { Page } from "@/components/page"
 import { NewService, ServicesTable } from "@/components/services-table"
@@ -68,9 +68,9 @@ export default async function ServicesPage() {
           <p className="font-serif text-xl">Give your agent the skill.</p>
           <p className="max-w-[560px] leading-relaxed text-muted-foreground">
             Make a token in{" "}
-            <Link href="/tokens" className="text-foreground underline">
+            <TopLink href="/tokens" className="text-foreground underline">
               Tokens
-            </Link>
+            </TopLink>
             , point Claude or any agent at{" "}
             <span className="font-mono text-foreground">{skill}</span>, and ask
             it for a service. It shows up here.

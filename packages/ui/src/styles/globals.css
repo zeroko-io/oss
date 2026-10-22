@@ -144,6 +144,9 @@
     @apply border-border outline-ring/50;
   }
   html {
+    /* Room for the scrollbar always, so pages that don't scroll don't shift
+       sideways. */
+    scrollbar-gutter: stable;
     scrollbar-color: var(--border) transparent;
     -webkit-tap-highlight-color: transparent;
   }
@@ -195,38 +198,47 @@
 }
 
 ::view-transition-old(.page-out) {
-  animation: 120ms ease-in both zk-vt-fade reverse;
+  animation: 90ms ease-in both zk-vt-fade reverse;
 }
 
 ::view-transition-new(.page-in) {
   animation:
-    220ms ease-out 80ms both zk-vt-fade,
-    320ms cubic-bezier(0.2, 0.7, 0.2, 1) both zk-vt-rise;
+    180ms ease-out 60ms both zk-vt-fade,
+    260ms cubic-bezier(0.2, 0.7, 0.2, 1) 60ms both zk-vt-rise;
+}
+
+/* A page's old and new snapshots stay where they are: only fades and the
+   slides below move them, never a morph between their boxes. */
+::view-transition-group(.page-in),
+::view-transition-group(.page-out),
+::view-transition-group(.nav-forward),
+::view-transition-group(.nav-back) {
+  animation: none;
 }
 
 ::view-transition-old(.nav-forward) {
-  --zk-slide: -24px;
+  --zk-slide: -16px;
   animation:
     120ms ease-in both zk-vt-fade reverse,
     300ms ease-in-out both zk-vt-slide reverse;
 }
 
 ::view-transition-new(.nav-forward) {
-  --zk-slide: 24px;
+  --zk-slide: 16px;
   animation:
     200ms ease-out 100ms both zk-vt-fade,
     300ms ease-in-out both zk-vt-slide;
 }
 
 ::view-transition-old(.nav-back) {
-  --zk-slide: 24px;
+  --zk-slide: 16px;
   animation:
     120ms ease-in both zk-vt-fade reverse,
     300ms ease-in-out both zk-vt-slide reverse;
 }
 
 ::view-transition-new(.nav-back) {
-  --zk-slide: -24px;
+  --zk-slide: -16px;
   animation:
     200ms ease-out 100ms both zk-vt-fade,
     300ms ease-in-out both zk-vt-slide;
@@ -237,7 +249,8 @@
   animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-::view-transition-group(.tab) {
+::view-transition-group(.tab),
+::view-transition-group(.pill) {
   animation-duration: 260ms;
   animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
@@ -250,7 +263,7 @@
 
 @keyframes zk-vt-rise {
   from {
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
 }
 

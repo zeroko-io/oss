@@ -1,5 +1,6 @@
 "use client"
 
+import { ArrowDown } from "lucide-react"
 import * as React from "react"
 import { cn } from "cn"
 
@@ -191,7 +192,7 @@ function LogView({
             className="absolute right-3 bottom-3 animate-in shadow-lg duration-200 fade-in slide-in-from-bottom-1"
             onClick={() => setFollow(true)}
           >
-            Latest ↓
+            Latest <ArrowDown aria-hidden />
           </Button>
         )}
       </div>

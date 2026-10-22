@@ -1,9 +1,9 @@
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { CopyButton } from "@zeroko/ui/components/copy-button"
 import { Kicker, PageHeader } from "@zeroko/ui/components/ledger"
 import { RunnerError } from "@zeroko/ui/lib/runner"
 
+import { TopLink } from "@/components/links"
 import { AutoRefresh } from "@/components/auto-refresh"
 import { Page, ServiceName } from "@/components/page"
 import { ServiceActions } from "@/components/service/header"
@@ -28,13 +28,13 @@ export default async function ServiceLayout(
     <Page>
       <AutoRefresh />
       <Kicker>
-        <Link
+        <TopLink
           href="/"
           transitionTypes={["nav-back"]}
           className="hover:text-foreground"
         >
           Services
-        </Link>{" "}
+        </TopLink>{" "}
         / <span className="text-foreground">{service.name}</span>
       </Kicker>
       <PageHeader
