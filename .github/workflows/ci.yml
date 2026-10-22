@@ -73,12 +73,13 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd packages/commons
-          base=$(node -p 'require("./package.json").version')
-          npm version "$base-dev.$GITHUB_RUN_NUMBER" --no-git-tag-version
-          # npm 11 asks the registry for the package before publishing and
-          # takes GitHub Packages' 404 for a package not published yet as an
-          # error; npm 10 just publishes.
-          npx -y npm@10.9.9 publish --tag dev
+          # The version is written into package.json directly: inside the
+          # workspace, npm version would also update the lockfile, and the
+          # panel's "*" range doesn't take a prerelease, so npm would look for
+          # one in the registry.
+          v="$(node -p 'require("./package.json").version')-dev.$GITHUB_RUN_NUMBER"
+          node -e 'const fs = require("fs"); const p = JSON.parse(fs.readFileSync("package.json")); p.version = process.argv[1]; fs.writeFileSync("package.json", JSON.stringify(p, null, 2))' "$v"
+          npm publish --tag dev
 
   # The image is built on amd64 for both platforms: its last stage only
   # copies JavaScript, so arm64 needs no emulation.
@@ -223,8 +224,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd packages/commons
-          npm version "${{ steps.check.outputs.version }}" --no-git-tag-version
-          npx -y npm@10.9.9 publish
+          node -e 'const fs = require("fs"); const p = JSON.parse(fs.readFileSync("package.json")); p.version = process.argv[1]; fs.writeFileSync("package.json", JSON.stringify(p, null, 2))' "${{ steps.check.outputs.version }}"
+          npm publish
       - name: GitHub release
         run: |
           v="${{ steps.check.outputs.version }}"
