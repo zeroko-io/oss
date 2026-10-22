@@ -9,7 +9,7 @@ deploy services on it. Self-hosted next to the runner.
 - `apps/panel`: the panel, a Next.js app. Its server talks to the runner's
   API with the root token, which never reaches the browser.
 - `packages/ui`: `@zeroko/ui`, Zeroko's look (the theme tokens) and its
-  components, shadcn-based, shared with Zeroko's other panels. MIT licensed.
+  components, shadcn-based, shared with Zeroko's other panels.
 - `skill.md`: what agents read to use Zeroko.
 
 ## Develop
@@ -25,3 +25,5 @@ Add a shadcn component to `@zeroko/ui`:
 ```sh
 npx shadcn@latest add dialog -c apps/panel
 ```
+
+MIT licensed.
