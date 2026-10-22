@@ -1,5 +1,8 @@
-/* Zeroko's look: dark, always, on stone greys. shadcn's components read
-   these tokens; ok, warn and info are ours, for states. */
+/* Zeroko's look, "Ledger": dark, always, on warm blacks, with hairline
+   rules instead of cards. Three typefaces: a serif for titles and figures,
+   Geist for the interface, Geist Mono for labels, names and logs. shadcn's
+   components read these tokens; brand, faint, rule, field, ok, warn and info
+   are ours. The brand accent is one token: change it here and only here. */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -9,9 +12,10 @@
 @source "../**/*.{ts,tsx}";
 
 @theme inline {
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-serif);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -30,6 +34,10 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-brand: var(--brand);
+  --color-faint: var(--faint);
+  --color-rule: var(--rule);
+  --color-field: var(--field);
   --color-ok: var(--ok);
   --color-warn: var(--warn);
   --color-info: var(--info);
@@ -57,41 +65,55 @@
 
 :root {
   color-scheme: dark;
-  --background: #0c0a09;
-  --foreground: #f5f5f4;
-  --card: #151312;
-  --card-foreground: #f5f5f4;
-  --popover: #151312;
-  --popover-foreground: #f5f5f4;
-  --primary: #f5f5f4;
-  --primary-foreground: #0c0a09;
-  --secondary: #1f1c1a;
-  --secondary-foreground: #f5f5f4;
-  --muted: #1f1c1a;
-  --muted-foreground: #a8a29e;
-  --accent: #1f1c1a;
-  --accent-foreground: #f5f5f4;
-  --destructive: #f87171;
-  --border: #292524;
-  --input: #44403c;
-  --ring: #78716c;
-  --ok: #4ade80;
-  --warn: #fbbf24;
-  --info: #60a5fa;
-  --chart-1: #60a5fa;
-  --chart-2: #4ade80;
-  --chart-3: #fbbf24;
-  --chart-4: #f87171;
-  --chart-5: #a8a29e;
-  --radius: 0.5rem;
-  --sidebar: #0c0a09;
-  --sidebar-foreground: #f5f5f4;
-  --sidebar-primary: #f5f5f4;
-  --sidebar-primary-foreground: #0c0a09;
-  --sidebar-accent: #1f1c1a;
-  --sidebar-accent-foreground: #f5f5f4;
-  --sidebar-border: #292524;
-  --sidebar-ring: #78716c;
+  --background: #0f0e0d;
+  --foreground: #f2f0ed;
+  --card: #161412;
+  --card-foreground: #f2f0ed;
+  --popover: #161412;
+  --popover-foreground: #f2f0ed;
+  --primary: #f2f0ed;
+  --primary-foreground: #0f0e0d;
+  --secondary: #1d1b19;
+  --secondary-foreground: #f2f0ed;
+  --muted: #1d1b19;
+  --muted-foreground: #8f8983;
+  --accent: #1d1b19;
+  --accent-foreground: #f2f0ed;
+  --destructive: #ef7a6a;
+  --border: #2a2724;
+  --input: #2a2724;
+  --ring: #8f8983;
+  --brand: #e8673a;
+  --faint: #6b655f;
+  --rule: #1d1b19;
+  --field: #161412;
+  --ok: #6fcf8e;
+  --warn: #e8b04a;
+  --info: #8fb8f0;
+  --chart-1: #e8673a;
+  --chart-2: #6fcf8e;
+  --chart-3: #e8b04a;
+  --chart-4: #8fb8f0;
+  --chart-5: #8f8983;
+  --radius: 0.1875rem;
+  --sidebar: #0f0e0d;
+  --sidebar-foreground: #f2f0ed;
+  --sidebar-primary: #f2f0ed;
+  --sidebar-primary-foreground: #0f0e0d;
+  --sidebar-accent: #1d1b19;
+  --sidebar-accent-foreground: #f2f0ed;
+  --sidebar-border: #2a2724;
+  --sidebar-ring: #8f8983;
+}
+
+/* The small uppercase mono label over figures, columns and fields. */
+@utility kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
 }
 
 @layer base {
@@ -99,9 +121,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-sm text-foreground;
+    font-variant-numeric: tabular-nums;
   }
   ::selection {
-    @apply bg-foreground/15;
+    @apply bg-brand/30;
   }
 }
