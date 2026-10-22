@@ -27,7 +27,7 @@ export default async function SignInPage() {
         </div>
         <div className="mt-14 flex gap-8 font-mono text-xs text-faint">
           <span>Zeroko OSS</span>
-          <span>MIT · AGPL</span>
+          <span>MIT - AGPL</span>
         </div>
       </div>
       <div className="flex flex-col justify-center gap-7 p-6 sm:p-14">

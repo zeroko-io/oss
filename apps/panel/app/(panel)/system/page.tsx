@@ -4,14 +4,23 @@ import {
   Facts,
   Meter,
   Mono,
-  PageHeader,
   SectionTitle,
+  Stat,
+  Stats,
   Table,
   Td,
   Th,
+  Tr,
 } from "@zeroko/ui/components/ledger"
-import { formatBytes, timeAgo } from "@zeroko/ui/lib/format"
+import {
+  bytesParts,
+  duration,
+  formatBytes,
+  relative,
+} from "@zeroko/ui/lib/format"
 
+import { AutoRefresh } from "@/components/auto-refresh"
+import { Page } from "@/components/page"
 import { SettingsForm } from "@/components/settings-form"
 import { runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
@@ -23,21 +32,33 @@ export default async function SystemPage() {
   const r = runner()
   const [system, settings] = await Promise.all([r.system(), r.settings()])
   const used = system.disk.total - system.disk.free
+  const memory = system.processes.reduce((n, p) => n + p.memory, 0)
+  const [data, dataUnit] = bytesParts(system.data_bytes)
+  const [free, freeUnit] = bytesParts(system.disk.free)
   return (
-    <>
-      <PageHeader
-        kicker="Runner · system"
-        title="System"
-        note="Changing a setting restarts the runner in place."
-      />
+    <Page>
+      <AutoRefresh every={10000} />
+      <Stats className="md:grid-cols-5">
+        <Stat label="Uptime" value={duration(Date.now() - system.started)} />
+        <Stat label="Services" value={system.services} />
+        <Stat
+          label="Processes"
+          value={system.processes.length}
+          unit={`/ ${settings.max_processes}`}
+        />
+        <Stat label="Service data" value={data} unit={dataUnit} />
+        <Stat label="Disk free" value={free} unit={freeUnit} />
+      </Stats>
       <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_300px]">
-        <SettingsForm settings={settings} />
+        <section className="flex flex-col gap-4">
+          <SectionTitle>Settings</SectionTitle>
+          <SettingsForm settings={settings} />
+        </section>
         <aside className="flex flex-col gap-8">
           <Facts>
             <Fact label="Runner">{system.version}</Fact>
             <Fact label="workerd">{system.workerd || "unknown"}</Fact>
-            <Fact label="Started">{timeAgo(system.started)}</Fact>
-            <Fact label="Services">{system.services}</Fact>
+            <Fact label="Started">{relative(system.started)}</Fact>
             {system.disk.total > 0 && (
               <Meter
                 label="Disk"
@@ -55,24 +76,31 @@ export default async function SystemPage() {
           </Facts>
           {system.processes.length > 0 && (
             <section className="flex flex-col gap-3">
-              <SectionTitle className="text-lg">Running now</SectionTitle>
+              <div className="flex items-baseline justify-between">
+                <SectionTitle className="text-lg">Running now</SectionTitle>
+                <Mono>{formatBytes(memory)}</Mono>
+              </div>
               <Table>
                 <thead>
                   <tr>
                     <Th>Service</Th>
                     <Th className="text-right">Memory</Th>
+                    <Th className="text-right">CPU</Th>
                   </tr>
                 </thead>
                 <tbody>
                   {system.processes.map((p) => (
-                    <tr key={p.pid}>
+                    <Tr key={p.pid}>
                       <Td className="py-2.5">
                         <Mono className="text-foreground">{p.service}</Mono>
                       </Td>
                       <Td className="py-2.5 text-right">
                         <Mono>{formatBytes(p.memory)}</Mono>
                       </Td>
-                    </tr>
+                      <Td className="py-2.5 text-right">
+                        <Mono>{p.cpu}%</Mono>
+                      </Td>
+                    </Tr>
                   ))}
                 </tbody>
               </Table>
@@ -80,6 +108,6 @@ export default async function SystemPage() {
           )}
         </aside>
       </div>
-    </>
+    </Page>
   )
 }

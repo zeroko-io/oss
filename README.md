@@ -6,10 +6,15 @@ deploy services on it. Self-hosted next to the runner.
 
 ## What it does
 
-- Lists the runner's services, with their status, traffic, versions,
-  bindings and logs; stops, starts, rolls back and deletes them.
+- Lists the runner's services; for each, its traffic, versions (with their
+  code, a quick deploy and uploads), a live log, its data (SQL on its
+  databases, its files, jobs and realtime channels) and its settings (egress,
+  disk quota, vars, secrets, export and import); stops, starts, rolls back
+  and deletes them.
 - Makes and revokes the tokens agents deploy with.
-- Changes the runner's settings (domain, limits), which restarts it in place.
+- Changes the runner's settings (domain, limits), which restarts it in
+  place; tails its log; downloads and restores backups.
+- Light and dark, following the system or a fixed choice.
 - Serves the agents' skill at `/skill.md`, filled in with its own address and
   the runner's limits, and the runner's API at `/api`, so agents need only
   the panel's address and a token.

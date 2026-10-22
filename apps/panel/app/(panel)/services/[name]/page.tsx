@@ -1,26 +1,29 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { notFound } from "next/navigation"
-import { Button } from "@zeroko/ui/components/button"
+import { CopyButton } from "@zeroko/ui/components/copy-button"
 import {
   Fact,
   Facts,
-  Kicker,
   LogLines,
   type LogTone,
+  Meter,
   Mono,
-  PageHeader,
   SectionTitle,
-  Table,
-  Td,
-  Th,
+  Stat,
+  Stats,
 } from "@zeroko/ui/components/ledger"
-import { clock, day, formatBytes, timeAgo } from "@zeroko/ui/lib/format"
-import { type LogEntry, RunnerError } from "@zeroko/ui/lib/runner"
+import {
+  bytesParts,
+  clock,
+  day,
+  duration,
+  formatBytes,
+  relative,
+} from "@zeroko/ui/lib/format"
+import type { LogEntry } from "@zeroko/ui/lib/runner"
 
-import { DeleteService } from "@/components/delete-service"
-import { ServiceStatus } from "@/components/service-status"
-import { activate, setStopped } from "@/lib/actions"
+import { Page } from "@/components/page"
+import { RunCron } from "@/components/service/overview"
 import { runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 
@@ -37,236 +40,165 @@ const sourceTone: Record<LogEntry["source"], LogTone> = {
   runtime: "brand",
 }
 
-function bindingDetail(b: {
-  type: string
-  bytes?: number
-  count?: number
-}): string {
-  switch (b.type) {
-    case "db":
-      return `SQLite · ${formatBytes(b.bytes ?? 0)}`
-    case "files":
-      return `${b.count ?? 0} files · ${formatBytes(b.bytes ?? 0)}`
-    default:
-      return ""
-  }
+function egressSummary(hosts: string[]): string {
+  if (hosts.includes("*")) return "any public host"
+  return hosts.length ? hosts.join(", ") : "none"
 }
 
-export default async function ServicePage(
+export default async function ServiceOverview(
   props: PageProps<"/services/[name]">
 ) {
   await requireSession()
   const name = decodeURIComponent((await props.params).name)
   const r = runner()
-  const [service, deployments, logs, settings] = await Promise.all([
+  const [service, logs] = await Promise.all([
     r.service(name),
-    r.deployments(name),
-    r.logs(name, { limit: 40 }),
-    r.settings(),
-  ]).catch((err) => {
-    if (err instanceof RunnerError && err.status === 404) notFound()
-    throw err
-  })
-
-  const stopped = service.status === "stopped"
-  const lines = logs
-    .slice(-40)
-    .reverse()
-    .map((l) => ({
-      id: l.id,
-      time: clock(l.ts),
-      kind: l.level === "error" ? "error" : l.source,
-      tone: l.level === "error" ? ("error" as const) : sourceTone[l.source],
-      message: l.message,
-    }))
+    r.logs(name, { limit: 12 }),
+  ])
+  const d = service.deployment
+  const m = service.manifest
+  const p = service.process
+  const [stored, storedUnit] = bytesParts(service.bytes)
+  // The service's own vars over the version's.
+  const vars = Object.entries({
+    ...m?.vars,
+    ...Object.fromEntries(service.vars.map((v) => [v.name, v.value])),
+  }).sort(([a], [b]) => a.localeCompare(b))
+  const lines = logs.reverse().map((l) => ({
+    id: l.id,
+    time: clock(l.ts),
+    kind: l.level === "error" ? "error" : l.source,
+    tone: l.level === "error" ? ("error" as const) : sourceTone[l.source],
+    message: l.message,
+  }))
+  const base = `/services/${encodeURIComponent(service.name)}`
 
   return (
-    <>
-      <Kicker>
-        <Link href="/" className="hover:text-foreground">
-          Services
-        </Link>{" "}
-        / <span className="text-foreground">{service.name}</span>
-      </Kicker>
-      <PageHeader
-        title={service.name}
-        actions={
-          <>
-            {service.status !== "not_deployed" && (
-              <form action={setStopped}>
-                <input type="hidden" name="name" value={service.name} />
-                <input type="hidden" name="stopped" value={String(!stopped)} />
-                <Button variant="outline">{stopped ? "Start" : "Stop"}</Button>
-              </form>
-            )}
-            <DeleteService name={service.name} />
-            {service.url && service.status === "running" && (
-              <Button asChild>
-                <a href={service.url} target="_blank" rel="noreferrer">
-                  Open
-                </a>
-              </Button>
-            )}
-          </>
-        }
-      />
-      <div className="grid gap-14 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <Facts>
-          <Fact label="Status">
-            <ServiceStatus status={service.status} />
-          </Fact>
-          <Fact label="URL">
-            {service.url
-              ? service.url.replace(/^https?:\/\//, "")
-              : "No domain set"}
-          </Fact>
-          <Fact label="Version">
-            {service.version ? `v${service.version}` : "None"}
-            {service.deployment &&
-              ` · deployed ${timeAgo(service.deployment.created_at)}`}
-          </Fact>
-          <Fact label="Process">
-            {service.process
-              ? `pid ${service.process.pid} · ${formatBytes(service.process.memory)} · ${service.process.cpu}% cpu`
-              : "Starts on the next request"}
-          </Fact>
-          <Fact label="Limits">
-            {settings.heap_mb} MB heap · {settings.cpu_seconds} s cpu
-          </Fact>
-          <Fact label="Data">
-            {formatBytes(service.bytes)} of {formatBytes(service.disk_quota)}
-          </Fact>
-          <Fact label="Jobs">
-            {service.jobs.queued} queued · {service.jobs.running} running ·{" "}
-            {service.jobs.dead} dead
-          </Fact>
-          <Fact label="Created">{day(service.created_at)}</Fact>
-        </Facts>
+    <Page>
+      <Stats className="md:grid-cols-5">
+        <Stat
+          label="Live version"
+          value={d ? `v${d.number}` : "none"}
+          unit={d ? relative(d.created_at) : undefined}
+        />
+        <Stat
+          label="Process"
+          value={
+            p ? formatBytes(p.memory) : service.stopped ? "stopped" : "idle"
+          }
+          unit={p ? `${p.cpu}% cpu` : undefined}
+        />
+        <Stat label="Storage" value={stored} unit={storedUnit} />
+        <Stat
+          label="Jobs"
+          value={service.jobs.queued + service.jobs.running}
+          unit={service.jobs.dead ? `${service.jobs.dead} dead` : undefined}
+        />
+        <Stat label="Connections" value={service.connections} unit="live" />
+      </Stats>
 
+      <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="flex min-w-0 flex-col gap-10">
           <section className="flex flex-col gap-3">
             <SectionTitle>Bindings</SectionTitle>
             {service.bindings.length === 0 ? (
               <p className="text-muted-foreground">
-                {service.deployment
+                {d
                   ? "This version declares no bindings."
                   : "Nothing deployed yet."}
               </p>
             ) : (
-              <Table>
-                <thead>
-                  <tr>
-                    <Th className="w-[110px]">Kind</Th>
-                    <Th>Name</Th>
-                    <Th className="text-right">Detail</Th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {service.bindings.map((b) => (
-                    <tr key={b.name}>
-                      <Td className="py-2.5">
-                        <Mono className="text-brand">
-                          {b.type.replace(/^service:.*/, "service")}
-                        </Mono>
-                      </Td>
-                      <Td className="py-2.5 font-medium">
-                        <span className="font-mono text-[13px]">{b.name}</span>
-                      </Td>
-                      <Td className="py-2.5 text-right">
-                        <Mono>
-                          {b.type.startsWith("service:")
-                            ? `calls ${b.type.slice(8)}`
-                            : bindingDetail(b)}
-                        </Mono>
-                      </Td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            )}
-          </section>
-
-          <section className="flex flex-col gap-3">
-            <SectionTitle>Versions</SectionTitle>
-            {deployments.length === 0 ? (
-              <p className="text-muted-foreground">No versions yet.</p>
-            ) : (
-              <Table>
-                <thead>
-                  <tr>
-                    <Th className="w-[60px]" />
-                    <Th>Main</Th>
-                    <Th className="w-[120px]">Built</Th>
-                    <Th className="w-[110px] text-right">When</Th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {deployments.slice(0, 8).map((d) => (
-                    <tr key={d.id}>
-                      <Td className="py-2.5">
-                        <Mono
-                          className={d.active ? "text-foreground" : undefined}
-                        >
-                          v{d.number}
-                        </Mono>
-                      </Td>
-                      <Td className="py-2.5">
-                        <Mono className="text-foreground">
-                          {d.manifest.main}
-                        </Mono>
-                        {d.error && (
-                          <span className="ml-3 text-[13px] text-destructive">
-                            {d.error}
-                          </span>
-                        )}
-                      </Td>
-                      <Td className="py-2.5">
-                        <Mono
-                          className={
-                            d.status === "failed"
-                              ? "text-destructive"
-                              : undefined
-                          }
-                        >
-                          {d.status === "ready" ? "ok" : "failed"}
-                        </Mono>
-                      </Td>
-                      <Td className="py-2.5 text-right">
-                        {d.active ? (
-                          <Mono className="text-brand">current</Mono>
-                        ) : d.status === "ready" ? (
-                          <form action={activate} className="inline">
-                            <input
-                              type="hidden"
-                              name="name"
-                              value={service.name}
-                            />
-                            <input type="hidden" name="id" value={d.id} />
-                            <Button
-                              variant="link"
-                              size="sm"
-                              className="h-auto font-mono text-xs font-normal"
-                            >
-                              {timeAgo(d.created_at)} · use
-                            </Button>
-                          </form>
-                        ) : (
-                          <Mono>{timeAgo(d.created_at)}</Mono>
-                        )}
-                      </Td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
+              <ul className="flex flex-col border-t">
+                {service.bindings.map((b) => (
+                  <li
+                    key={b.name}
+                    className="flex items-baseline gap-5 border-b border-rule py-2.5"
+                  >
+                    <Mono className="w-20 shrink-0 text-brand">
+                      {b.type.startsWith("service:") ? "service" : b.type}
+                    </Mono>
+                    <span className="font-mono text-[13px]">{b.name}</span>
+                    <Mono className="ml-auto">
+                      {b.type.startsWith("service:")
+                        ? `calls ${b.type.slice(8)}`
+                        : b.type === "files"
+                          ? `${b.count ?? 0} files - ${formatBytes(b.bytes ?? 0)}`
+                          : b.type === "db"
+                            ? formatBytes(b.bytes ?? 0)
+                            : ""}
+                    </Mono>
+                  </li>
+                ))}
+              </ul>
             )}
           </section>
 
           <section className="flex flex-col gap-4">
-            <SectionTitle>Recent logs</SectionTitle>
+            <div className="flex items-baseline justify-between">
+              <SectionTitle>Recent logs</SectionTitle>
+              <Link
+                href={`${base}/logs`}
+                className="font-mono text-[11px] tracking-[0.08em] text-muted-foreground uppercase hover:text-foreground"
+              >
+                Tail the log →
+              </Link>
+            </div>
             <LogLines lines={lines} />
           </section>
         </div>
+
+        <Facts>
+          <Meter
+            label="Disk"
+            used={formatBytes(service.bytes)}
+            total={formatBytes(service.disk_quota)}
+            ratio={service.disk_quota ? service.bytes / service.disk_quota : 0}
+          />
+          <Fact label="Crons">
+            {m?.crons?.length ? (
+              <span className="flex flex-col gap-1">
+                {m.crons.map((c) => (
+                  <span key={c.schedule} className="flex items-center gap-3">
+                    {c.schedule}
+                    {!service.stopped && (
+                      <RunCron service={service.name} schedule={c.schedule} />
+                    )}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              "none"
+            )}
+          </Fact>
+          {vars.length > 0 && (
+            <Fact label="Vars">
+              <span className="flex flex-col gap-0.5">
+                {vars.map(([k, v]) => (
+                  <span key={k} className="truncate" title={v}>
+                    {k} <span className="text-muted-foreground">= {v}</span>
+                  </span>
+                ))}
+              </span>
+            </Fact>
+          )}
+          <Fact label="Egress">{egressSummary(service.egress)}</Fact>
+          {p && <Fact label="Up for">{duration(Date.now() - p.started)}</Fact>}
+          <Fact label="Created">{day(service.created_at)}</Fact>
+          <Fact label="ID">
+            <span className="flex items-center gap-1">
+              {service.id}
+              <CopyButton
+                text={service.id}
+                variant="ghost"
+                size="sm"
+                className="h-5 px-1.5 font-mono text-[11px] font-normal"
+              >
+                copy
+              </CopyButton>
+            </span>
+          </Fact>
+        </Facts>
       </div>
-    </>
+    </Page>
   )
 }

@@ -1,12 +1,14 @@
 "use client"
 
-import { useActionState } from "react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { Button } from "@zeroko/ui/components/button"
+import { confirm, toast } from "@zeroko/ui/components/feedback"
 import { Input, Select } from "@zeroko/ui/components/input"
 import { FieldRow } from "@zeroko/ui/components/ledger"
 import type { Settings } from "@zeroko/ui/lib/runner"
 
-import { saveSettings } from "@/lib/actions"
+import { runner } from "@/lib/browser"
 
 function NumberField({
   name,
@@ -39,10 +41,49 @@ function NumberField({
   )
 }
 
+/** The runner's settings. Saving restarts it in place, so the form waits
+ * for it to come back before drawing the page again. */
 export function SettingsForm({ settings: s }: { settings: Settings }) {
-  const [state, action, pending] = useActionState(saveSettings, {})
+  const router = useRouter()
+  const [busy, setBusy] = useState(false)
   return (
-    <form action={action} className="flex flex-col gap-6">
+    <form
+      className="flex flex-col gap-6"
+      onSubmit={async (e) => {
+        e.preventDefault()
+        const f = new FormData(e.currentTarget)
+        const n = (k: string) => Number(f.get(k))
+        if (
+          !(await confirm(
+            "Save and restart the runner? Services start again on their next request, and realtime connections close.",
+            "Save and restart",
+            { danger: false }
+          ))
+        )
+          return
+        setBusy(true)
+        try {
+          await runner.setSettings({
+            domain: String(f.get("domain") ?? "").trim(),
+            public_scheme: String(f.get("public_scheme")),
+            max_body_mb: n("max_body_mb"),
+            heap_mb: n("heap_mb"),
+            cpu_seconds: n("cpu_seconds"),
+            idle_seconds: n("idle_seconds"),
+            max_processes: n("max_processes"),
+            disk_mb: n("disk_mb"),
+            egress: f.get("egress") === "on",
+          })
+          if (await runner.back()) toast("Saved. The runner restarted.")
+          else toast("Saved, but the runner hasn't come back yet.", true)
+          router.refresh()
+        } catch (err) {
+          toast(err, true)
+        } finally {
+          setBusy(false)
+        }
+      }}
+    >
       <div className="flex flex-col border-t">
         <FieldRow
           label="Domain"
@@ -116,7 +157,7 @@ export function SettingsForm({ settings: s }: { settings: Settings }) {
         />
         <FieldRow
           label="Outbound network"
-          hint="Lets services call the internet, unless a service says otherwise."
+          hint="Lets services call the internet, within each one's egress."
           htmlFor="egress"
         >
           <label className="flex items-center gap-2.5">
@@ -131,18 +172,10 @@ export function SettingsForm({ settings: s }: { settings: Settings }) {
           </label>
         </FieldRow>
       </div>
-      <div className="flex items-center gap-4">
-        <Button disabled={pending}>
-          {pending ? "Restarting" : "Save and restart"}
+      <div>
+        <Button disabled={busy}>
+          {busy ? "Restarting" : "Save and restart"}
         </Button>
-        {state.error && (
-          <span className="text-[13px] text-destructive">{state.error}</span>
-        )}
-        {state.done && !pending && (
-          <span className="font-mono text-xs text-ok">
-            Saved. The runner restarted.
-          </span>
-        )}
       </div>
     </form>
   )

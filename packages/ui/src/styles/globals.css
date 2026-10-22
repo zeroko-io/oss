@@ -1,13 +1,26 @@
-/* Zeroko's look, "Ledger": dark, always, on warm blacks, with hairline
-   rules instead of cards. Three typefaces: a serif for titles and figures,
-   Geist for the interface, Geist Mono for labels, names and logs. shadcn's
-   components read these tokens; brand, faint, rule, field, ok, warn and info
-   are ours. The brand accent is one token: change it here and only here. */
+/* Zeroko's look, "Ledger": warm paper or warm black, hairline rules instead
+   of cards. Three typefaces: a serif for titles and figures, Geist for the
+   interface, Geist Mono for labels, names and logs.
+
+   Every color is light-dark(light, dark): color-scheme picks one. With no
+   data-theme on <html> it follows the system; data-theme="light" or "dark"
+   fixes it. shadcn's components read these tokens; brand, faint, rule,
+   field, ok, warn and info are ours. The brand accent is one token: change
+   it here and only here. */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme="light"], [data-theme="light"] *)) {
+      @slot;
+    }
+  }
+}
 @source "../../../../apps/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
@@ -61,49 +74,59 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --animate-grow: zk-grow 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-breathe: zk-breathe 2.8s ease-in-out infinite;
 }
 
 :root {
-  color-scheme: dark;
-  --background: #0f0e0d;
-  --foreground: #f2f0ed;
-  --card: #161412;
-  --card-foreground: #f2f0ed;
-  --popover: #161412;
-  --popover-foreground: #f2f0ed;
-  --primary: #f2f0ed;
-  --primary-foreground: #0f0e0d;
-  --secondary: #1d1b19;
-  --secondary-foreground: #f2f0ed;
-  --muted: #1d1b19;
-  --muted-foreground: #8f8983;
-  --accent: #1d1b19;
-  --accent-foreground: #f2f0ed;
-  --destructive: #ef7a6a;
-  --border: #2a2724;
-  --input: #2a2724;
-  --ring: #8f8983;
-  --brand: #e8673a;
-  --faint: #6b655f;
-  --rule: #1d1b19;
-  --field: #161412;
-  --ok: #6fcf8e;
-  --warn: #e8b04a;
-  --info: #8fb8f0;
-  --chart-1: #e8673a;
-  --chart-2: #6fcf8e;
-  --chart-3: #e8b04a;
-  --chart-4: #8fb8f0;
-  --chart-5: #8f8983;
+  color-scheme: light dark;
+  --background: light-dark(#f5f3ee, #0f0e0d);
+  --foreground: light-dark(#1b1916, #f2f0ed);
+  --card: light-dark(#fbfaf7, #161412);
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: var(--foreground);
+  --primary-foreground: var(--background);
+  --secondary: light-dark(#ebe7e0, #1d1b19);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--secondary);
+  --muted-foreground: light-dark(#6e6862, #8f8983);
+  --accent: var(--secondary);
+  --accent-foreground: var(--foreground);
+  --destructive: light-dark(#c23f2c, #ef7a6a);
+  --border: light-dark(#d9d3ca, #2a2724);
+  --input: var(--border);
+  --ring: var(--muted-foreground);
+  --brand: light-dark(#d0532a, #e8673a);
+  --faint: light-dark(#9c958d, #6b655f);
+  --rule: light-dark(#e7e2da, #1d1b19);
+  --field: light-dark(#fbfaf7, #161412);
+  --ok: light-dark(#2c8a4e, #6fcf8e);
+  --warn: light-dark(#a8740f, #e8b04a);
+  --info: light-dark(#3563ad, #8fb8f0);
+  --chart-1: var(--brand);
+  --chart-2: var(--ok);
+  --chart-3: var(--warn);
+  --chart-4: var(--info);
+  --chart-5: var(--muted-foreground);
   --radius: 0.1875rem;
-  --sidebar: #0f0e0d;
-  --sidebar-foreground: #f2f0ed;
-  --sidebar-primary: #f2f0ed;
-  --sidebar-primary-foreground: #0f0e0d;
-  --sidebar-accent: #1d1b19;
-  --sidebar-accent-foreground: #f2f0ed;
-  --sidebar-border: #2a2724;
-  --sidebar-ring: #8f8983;
+  --sidebar: var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--secondary);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 /* The small uppercase mono label over figures, columns and fields. */
@@ -120,11 +143,134 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scrollbar-color: var(--border) transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     @apply bg-background font-sans text-sm text-foreground;
     font-variant-numeric: tabular-nums;
   }
   ::selection {
-    @apply bg-brand/30;
+    @apply bg-brand/25;
+  }
+  :where(a, summary, [role="button"]):focus-visible {
+    @apply rounded-sm outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+@keyframes zk-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes zk-rise-bar {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes zk-breathe {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* View transitions. Navigations move only the page: the header and the root
+   stay put. A page fades in from slightly below; going into something
+   slides forward, coming back slides back; shared names morph. The theme
+   switch crossfades the whole document. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+:root[data-theme-switching]::view-transition-old(root) {
+  animation: 220ms ease-out both zk-vt-fade reverse;
+}
+
+:root[data-theme-switching]::view-transition-new(root) {
+  animation: 220ms ease-out both zk-vt-fade;
+}
+
+::view-transition-old(.page-out) {
+  animation: 120ms ease-in both zk-vt-fade reverse;
+}
+
+::view-transition-new(.page-in) {
+  animation:
+    220ms ease-out 80ms both zk-vt-fade,
+    320ms cubic-bezier(0.2, 0.7, 0.2, 1) both zk-vt-rise;
+}
+
+::view-transition-old(.nav-forward) {
+  --zk-slide: -24px;
+  animation:
+    120ms ease-in both zk-vt-fade reverse,
+    300ms ease-in-out both zk-vt-slide reverse;
+}
+
+::view-transition-new(.nav-forward) {
+  --zk-slide: 24px;
+  animation:
+    200ms ease-out 100ms both zk-vt-fade,
+    300ms ease-in-out both zk-vt-slide;
+}
+
+::view-transition-old(.nav-back) {
+  --zk-slide: 24px;
+  animation:
+    120ms ease-in both zk-vt-fade reverse,
+    300ms ease-in-out both zk-vt-slide reverse;
+}
+
+::view-transition-new(.nav-back) {
+  --zk-slide: -24px;
+  animation:
+    200ms ease-out 100ms both zk-vt-fade,
+    300ms ease-in-out both zk-vt-slide;
+}
+
+::view-transition-group(.morph) {
+  animation-duration: 340ms;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+::view-transition-group(.tab) {
+  animation-duration: 260ms;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes zk-vt-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes zk-vt-rise {
+  from {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes zk-vt-slide {
+  from {
+    transform: translateX(var(--zk-slide));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

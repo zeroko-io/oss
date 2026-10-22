@@ -1,7 +1,9 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono, Lora } from "next/font/google"
+import { cookies } from "next/headers"
 
 import "@zeroko/ui/globals.css"
+import { parseTheme, THEME_COOKIE, themeAttribute } from "@zeroko/ui/lib/theme"
 import { cn } from "@zeroko/ui/lib/utils"
 
 const sans = Geist({ subsets: ["latin"], variable: "--font-sans" })
@@ -13,19 +15,28 @@ const serif = Lora({
 })
 
 export const metadata: Metadata = {
-  title: { default: "Zeroko", template: "%s · Zeroko" },
+  title: { default: "Zeroko", template: "%s - Zeroko" },
 }
 
-export default function RootLayout({
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f3ee" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f0e0d" },
+  ],
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value)
   return (
     <html
       lang="en"
+      data-theme={themeAttribute(theme)}
       className={cn(
-        "dark antialiased",
+        "antialiased",
         sans.variable,
         mono.variable,
         serif.variable

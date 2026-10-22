@@ -1,6 +1,7 @@
 // The pieces of the Ledger look: the logo, page titles, figures, ruled
 // tables, status marks and log lines. Server components, no state.
 import * as React from "react"
+import { ViewTransition } from "react"
 import { cn } from "cn"
 import { Slot } from "radix-ui"
 
@@ -39,7 +40,7 @@ function PageHeader({
     <div className={cn("flex flex-wrap items-end gap-4", className)}>
       <div className="flex min-w-0 flex-col gap-2">
         {kicker && <Kicker>{kicker}</Kicker>}
-        <h1 className="font-serif text-[38px] leading-none font-normal tracking-[-0.015em] break-words">
+        <h1 className="font-serif text-[38px] leading-none font-normal tracking-[-0.015em] wrap-break-word">
           {title}
         </h1>
         {note && (
@@ -89,7 +90,9 @@ function Stat({
       <span className="font-serif text-[32px] leading-none tracking-[-0.01em]">
         {value}
         {unit && (
-          <span className="text-[17px] text-muted-foreground"> {unit}</span>
+          <span className="inline-block text-[17px] whitespace-nowrap text-muted-foreground">
+            &nbsp;{unit}
+          </span>
         )}
       </span>
     </div>
@@ -122,6 +125,19 @@ function Td({ className, ...props }: React.ComponentProps<"td">) {
     <td
       className={cn(
         "border-b border-rule py-3.5 pr-5 align-middle last:pr-0",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+/** A table row that lights up under the pointer. */
+function Tr({ className, ...props }: React.ComponentProps<"tr">) {
+  return (
+    <tr
+      className={cn(
+        "transition-colors duration-150 hover:bg-secondary/50",
         className
       )}
       {...props}
@@ -171,7 +187,14 @@ function Status({
         className
       )}
     >
-      <span aria-hidden className={cn("size-[7px] shrink-0", toneMark[tone])} />
+      <span
+        aria-hidden
+        className={cn(
+          "size-[7px] shrink-0",
+          toneMark[tone],
+          tone === "ok" && "animate-breathe"
+        )}
+      />
       {children}
     </span>
   )
@@ -228,7 +251,7 @@ function TabNav({ className, ...props }: React.ComponentProps<"nav">) {
   return (
     <nav
       className={cn(
-        "flex self-stretch font-mono text-[11.5px] tracking-[0.09em] uppercase",
+        "flex [scrollbar-width:none] self-stretch font-mono text-[11.5px] tracking-[0.09em] uppercase",
         className
       )}
       {...props}
@@ -236,25 +259,44 @@ function TabNav({ className, ...props }: React.ComponentProps<"nav">) {
   )
 }
 
+/** A tab. Its underline is one shared element per group: when the active
+ * tab changes during a navigation, it slides from the old tab to the new
+ * one. Tabs shown together on a page each need their own group. */
 function TabLink({
   active,
   asChild,
+  group = "main",
   className,
+  children,
   ...props
-}: React.ComponentProps<"a"> & { active?: boolean; asChild?: boolean }) {
+}: React.ComponentProps<"a"> & {
+  active?: boolean
+  asChild?: boolean
+  group?: string
+}) {
   const Comp = asChild ? Slot.Root : "a"
   return (
     <Comp
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center border-b px-3.5 no-underline transition-colors",
+        "relative flex shrink-0 items-center px-3.5 no-underline transition-colors",
         active
-          ? "border-brand text-foreground"
-          : "border-transparent text-muted-foreground hover:text-foreground",
+          ? "text-foreground"
+          : "text-muted-foreground hover:text-foreground",
         className
       )}
       {...props}
-    />
+    >
+      <Slot.Slottable>{children}</Slot.Slottable>
+      {active && (
+        <ViewTransition name={`zk-tab-${group}`} share="tab" default="none">
+          <span
+            aria-hidden
+            className="absolute inset-x-0 bottom-0 h-px bg-brand"
+          />
+        </ViewTransition>
+      )}
+    </Comp>
   )
 }
 
@@ -321,7 +363,7 @@ function LogLines({
           <span className={cn("w-[60px] shrink-0", logTone[l.tone])}>
             {l.kind}
           </span>
-          <span className="min-w-0 break-words whitespace-pre-wrap">
+          <span className="min-w-0 wrap-break-word whitespace-pre-wrap">
             {l.message}
           </span>
         </div>
@@ -351,7 +393,7 @@ function Meter({
       </div>
       <div className="h-0.5 bg-rule">
         <div
-          className="h-0.5 bg-brand"
+          className="h-0.5 origin-left animate-grow bg-brand"
           style={{ width: `${Math.min(100, Math.max(0, ratio * 100))}%` }}
         />
       </div>
@@ -378,6 +420,7 @@ export {
   TabNav,
   Table,
   Td,
+  Tr,
   Th,
   type LogTone,
   type Tone,

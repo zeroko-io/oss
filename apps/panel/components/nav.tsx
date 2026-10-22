@@ -22,10 +22,10 @@ const tabs = [
   },
 ]
 
-export function Nav() {
+export function Nav({ className }: { className?: string }) {
   const path = usePathname()
   return (
-    <TabNav>
+    <TabNav className={className}>
       {tabs.map((t) => (
         <TabLink key={t.href} asChild active={t.match(path)}>
           <Link href={t.href}>{t.label}</Link>
