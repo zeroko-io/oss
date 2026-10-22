@@ -12,7 +12,6 @@ import { signOut } from "@/lib/actions"
 import { config } from "@/lib/config"
 import { runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
-import { panelVersion } from "@/lib/updates"
 
 export default async function PanelLayout({
   children,
@@ -21,9 +20,8 @@ export default async function PanelLayout({
 }) {
   await requireSession()
   const r = runner()
-  const [settings, system, jar] = await Promise.all([
+  const [settings, jar] = await Promise.all([
     r.settings().catch(() => null),
-    r.system().catch(() => null),
     cookies(),
   ])
   return (
@@ -77,8 +75,7 @@ export default async function PanelLayout({
       </main>
       <footer className="border-t">
         <div className="mx-auto flex max-w-[1280px] flex-wrap items-center gap-x-6 gap-y-1 px-6 py-5 font-mono text-[11px] text-faint md:px-14">
-          <span>Zeroko OSS {panelVersion}</span>
-          {system && <span>runner {system.version}</span>}
+          <span>Zeroko OSS</span>
           <a href="/skill.md" className="ml-auto hover:text-foreground">
             Agent skill
           </a>
