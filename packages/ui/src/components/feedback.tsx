@@ -8,7 +8,7 @@ import { cn } from "cn"
 
 import { Button } from "@zeroko/ui/components/button"
 
-type Toast = { id: number; text: string; error: boolean }
+type Toast = { id: number; text: string; error: boolean; leaving?: boolean }
 
 let push: (t: Toast) => void = () => {}
 let nextId = 0
@@ -21,10 +21,13 @@ function toast(message: unknown, error = false) {
 
 function Toaster() {
   const [items, setItems] = React.useState<Toast[]>([])
-  const dismiss = React.useCallback(
-    (id: number) => setItems((list) => list.filter((t) => t.id !== id)),
-    []
-  )
+  // A toast leaves with a short fade, then goes.
+  const dismiss = React.useCallback((id: number) => {
+    setItems((list) =>
+      list.map((t) => (t.id === id ? { ...t, leaving: true } : t))
+    )
+    setTimeout(() => setItems((list) => list.filter((t) => t.id !== id)), 180)
+  }, [])
   React.useEffect(() => {
     push = (t) => {
       setItems((list) => [...list.slice(-3), t])
@@ -47,7 +50,9 @@ function Toaster() {
           onClick={() => dismiss(t.id)}
           className={cn(
             "pointer-events-auto flex max-w-[420px] animate-in items-baseline gap-3 rounded-lg border bg-card py-2.5 pr-4 pl-3.5 text-left text-[13px] wrap-anywhere whitespace-pre-wrap shadow-[0_8px_30px_-12px_rgb(0_0_0/0.35)] duration-200 fade-in slide-in-from-bottom-2",
-            t.error ? "border-destructive/50" : "border-border"
+            t.error ? "border-destructive/50" : "border-border",
+            t.leaving &&
+              "animate-out duration-150 fill-mode-forwards fade-out slide-out-to-right-2"
           )}
         >
           <span

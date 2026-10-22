@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { Pill } from "@zeroko/ui/components/action"
 import { RequestChart } from "@zeroko/ui/components/chart"
 import { Stat, Stats } from "@zeroko/ui/components/ledger"
 import { formatNumber, latency, rate } from "@zeroko/ui/lib/format"
@@ -38,13 +39,14 @@ export default async function TrafficPage(
               scroll={false}
               aria-current={p === period ? "page" : undefined}
               className={cn(
-                "inline-flex h-6 items-center rounded-sm px-2.5 transition-colors",
+                "relative inline-flex h-6 items-center rounded-sm px-2.5 transition-colors",
                 p === period
-                  ? "bg-secondary text-foreground"
+                  ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {p}
+              {p === period && <Pill name="zk-period" />}
+              <span className="relative">{p}</span>
             </Link>
           ))}
         </nav>
