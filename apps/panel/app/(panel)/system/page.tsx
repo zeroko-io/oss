@@ -23,6 +23,7 @@ import { AutoRefresh } from "@/components/auto-refresh"
 import { Page } from "@/components/page"
 import { SettingsForm } from "@/components/settings-form"
 import { runner } from "@/lib/runner"
+import { panelVersion } from "@/lib/updates"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = { title: "System" }
@@ -56,6 +57,7 @@ export default async function SystemPage() {
         </section>
         <aside className="flex flex-col gap-8">
           <Facts>
+            <Fact label="Panel">{panelVersion}</Fact>
             <Fact label="Runner">{system.version}</Fact>
             <Fact label="workerd">{system.workerd || "unknown"}</Fact>
             <Fact label="Started">{relative(system.started)}</Fact>

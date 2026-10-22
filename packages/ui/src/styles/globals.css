@@ -235,13 +235,40 @@
   animation: none;
 }
 
+/* A shared name (a service's, from its row to its title): only the new
+   text is drawn, scaled from the old box to its own and kept in proportion,
+   so it grows crisp instead of stretching two blurred texts. */
 ::view-transition-group(.morph) {
-  animation-duration: 340ms;
+  animation-duration: 380ms;
   animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-::view-transition-group(.tab),
-::view-transition-group(.pill) {
+::view-transition-old(.morph) {
+  animation: none;
+  opacity: 0;
+}
+
+::view-transition-new(.morph) {
+  animation: none;
+  width: auto;
+  height: 100%;
+}
+
+/* Page titles: the old one fades into the new one, each at its own size,
+   anchored at the start of the line. */
+::view-transition-group(.title) {
+  animation-duration: 240ms;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+::view-transition-old(.title),
+::view-transition-new(.title) {
+  width: auto;
+  height: auto;
+  animation-duration: 200ms;
+}
+
+::view-transition-group(.tab) {
   animation-duration: 260ms;
   animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
 }

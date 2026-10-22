@@ -23,26 +23,40 @@ function Kicker({ className, ...props }: React.ComponentProps<"span">) {
   return <span className={cn("kicker", className)} {...props} />
 }
 
+/** A page's title, with what it is about and its actions. The title is
+ * one element across pages, so it changes rather than blinking; a page
+ * whose title already moves on its own (a shared name) passes shared. */
 function PageHeader({
   kicker,
   title,
   note,
   actions,
+  shared = true,
   className,
 }: {
   kicker?: React.ReactNode
   title: React.ReactNode
   note?: React.ReactNode
   actions?: React.ReactNode
+  shared?: boolean
   className?: string
 }) {
+  const h1 = (
+    <h1 className="font-serif text-[38px] leading-none font-normal tracking-[-0.015em] wrap-break-word">
+      {title}
+    </h1>
+  )
   return (
     <div className={cn("flex flex-wrap items-end gap-4", className)}>
       <div className="flex min-w-0 flex-col gap-2">
         {kicker && <Kicker>{kicker}</Kicker>}
-        <h1 className="font-serif text-[38px] leading-none font-normal tracking-[-0.015em] wrap-break-word">
-          {title}
-        </h1>
+        {shared ? (
+          <ViewTransition name="zk-page-title" share="title" default="none">
+            {h1}
+          </ViewTransition>
+        ) : (
+          h1
+        )}
         {note && (
           <p className="font-serif text-base text-muted-foreground italic">
             {note}
@@ -111,10 +125,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
 function Th({ className, ...props }: React.ComponentProps<"th">) {
   return (
     <th
-      className={cn(
-        "border-b pr-5 pb-2.5 kicker font-normal last:pr-0",
-        className
-      )}
+      className={cn("border-b px-3 pb-2.5 kicker font-normal", className)}
       {...props}
     />
   )
@@ -123,10 +134,7 @@ function Th({ className, ...props }: React.ComponentProps<"th">) {
 function Td({ className, ...props }: React.ComponentProps<"td">) {
   return (
     <td
-      className={cn(
-        "border-b border-rule py-3.5 pr-5 align-middle last:pr-0",
-        className
-      )}
+      className={cn("border-b border-rule px-3 py-3.5 align-middle", className)}
       {...props}
     />
   )

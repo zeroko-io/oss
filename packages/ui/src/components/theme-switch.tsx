@@ -4,6 +4,7 @@ import * as React from "react"
 import { cn } from "cn"
 import { Monitor, Moon, Sun, type LucideIcon } from "lucide-react"
 
+import { Indicator } from "@zeroko/ui/components/action"
 import { THEME_COOKIE, type Theme } from "@zeroko/ui/lib/theme"
 
 const choices: { value: Theme; label: string; Icon: LucideIcon }[] = [
@@ -44,10 +45,11 @@ function ThemeSwitch({
       role="radiogroup"
       aria-label="Theme"
       className={cn(
-        "inline-flex items-center rounded-lg border p-0.5",
+        "relative inline-flex items-center rounded-lg border p-0.5",
         className
       )}
     >
+      <Indicator />
       {choices.map(({ value, label, Icon }) => (
         <button
           key={value}
@@ -58,9 +60,9 @@ function ThemeSwitch({
           title={label}
           onClick={() => choose(value)}
           className={cn(
-            "grid size-6 place-items-center rounded-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
+            "relative grid size-6 place-items-center rounded-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
             theme === value
-              ? "bg-secondary text-foreground"
+              ? "text-foreground"
               : "text-faint hover:text-foreground"
           )}
         >

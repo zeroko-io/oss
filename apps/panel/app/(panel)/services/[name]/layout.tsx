@@ -38,6 +38,7 @@ export default async function ServiceLayout(
         / <span className="text-foreground">{service.name}</span>
       </Kicker>
       <PageHeader
+        shared={false}
         title={<ServiceName id={service.id}>{service.name}</ServiceName>}
         note={
           <span className="flex flex-wrap items-center gap-x-4 gap-y-1 font-sans text-sm not-italic">

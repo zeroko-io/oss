@@ -112,24 +112,23 @@ function Segmented<T extends string>({
   label: string
   className?: string
 }) {
-  const name = useTransitionName("seg")
   return (
     <div
       role="radiogroup"
       aria-label={label}
       className={cn(
-        "inline-flex items-center rounded-lg border p-0.5 font-mono text-[11px] tracking-[0.06em] uppercase",
+        "relative inline-flex items-center rounded-lg border p-0.5 font-mono text-[11px] tracking-[0.06em] uppercase",
         className
       )}
     >
+      <Indicator />
       {options.map(([v, text]) => (
         <button
           key={v}
           type="button"
           role="radio"
           aria-checked={v === value}
-          // In a transition, so the indicator slides to the new option.
-          onClick={() => React.startTransition(() => onChange(v))}
+          onClick={() => onChange(v)}
           className={cn(
             "relative inline-flex h-6 items-center gap-1.5 rounded-sm px-2.5 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
             v === value
@@ -137,31 +136,52 @@ function Segmented<T extends string>({
               : "text-muted-foreground hover:text-foreground"
           )}
         >
-          {v === value && <Pill name={name} />}
-          <span className="relative inline-flex items-center gap-1.5">
-            {text}
-          </span>
+          {text}
         </button>
       ))}
     </div>
   )
 }
 
-/** A view transition name of its own for each instance of a component. */
-function useTransitionName(prefix: string): string {
-  return `zk-${prefix}-${React.useId().replace(/[^\w-]/g, "")}`
-}
+const activeChild =
+  '[aria-checked="true"], [aria-current="page"], [aria-pressed="true"]'
 
-/** The background of the chosen option, one element that slides between
- * options when the choice changes in a transition. */
-function Pill({ name, className }: { name: string; className?: string }) {
+/** The background of the chosen option in a row of options: put it first
+ * in a relative parent whose options are relative too. It finds the option
+ * marked checked, current or pressed, and slides to it. */
+function Indicator({ className }: { className?: string }) {
+  const ref = React.useRef<HTMLSpanElement>(null)
+  const placed = React.useRef(false)
+  React.useLayoutEffect(() => {
+    const el = ref.current
+    const place = () => {
+      const active = el?.parentElement?.querySelector<HTMLElement>(activeChild)
+      if (!el) return
+      if (!active) {
+        el.style.opacity = "0"
+        return
+      }
+      // The first time, appear in place; after that, slide.
+      el.style.transitionDuration = placed.current ? "" : "0s"
+      el.style.opacity = "1"
+      el.style.transform = `translate(${active.offsetLeft}px, ${active.offsetTop}px)`
+      el.style.width = `${active.offsetWidth}px`
+      el.style.height = `${active.offsetHeight}px`
+      placed.current = true
+    }
+    place()
+    window.addEventListener("resize", place)
+    return () => window.removeEventListener("resize", place)
+  })
   return (
-    <React.ViewTransition name={name} share="pill" default="none">
-      <span
-        aria-hidden
-        className={cn("absolute inset-0 rounded-sm bg-secondary", className)}
-      />
-    </React.ViewTransition>
+    <span
+      ref={ref}
+      aria-hidden
+      className={cn(
+        "pointer-events-none absolute top-0 left-0 rounded-sm bg-secondary opacity-0 transition-[transform,width,height,opacity] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)] motion-reduce:transition-none",
+        className
+      )}
+    />
   )
 }
 
@@ -195,11 +215,4 @@ function ErrorDetails({
   )
 }
 
-export {
-  ActionButton,
-  ErrorDetails,
-  FileButton,
-  Pill,
-  Segmented,
-  useTransitionName,
-}
+export { ActionButton, ErrorDetails, FileButton, Indicator, Segmented }

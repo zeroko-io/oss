@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Pill } from "@zeroko/ui/components/action"
+import { Indicator } from "@zeroko/ui/components/action"
 import { RequestChart } from "@zeroko/ui/components/chart"
 import { Stat, Stats } from "@zeroko/ui/components/ledger"
 import { formatNumber, latency, rate } from "@zeroko/ui/lib/format"
@@ -30,8 +30,9 @@ export default async function TrafficPage(
       <div className="flex items-center justify-end">
         <nav
           aria-label="Period"
-          className="inline-flex rounded-lg border p-0.5 font-mono text-[11px] tracking-[0.06em] uppercase"
+          className="relative inline-flex rounded-lg border p-0.5 font-mono text-[11px] tracking-[0.06em] uppercase"
         >
+          <Indicator />
           {periods.map((p) => (
             <Link
               key={p}
@@ -45,7 +46,6 @@ export default async function TrafficPage(
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {p === period && <Pill name="zk-period" />}
               <span className="relative">{p}</span>
             </Link>
           ))}

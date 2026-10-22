@@ -2,13 +2,12 @@
 
 import { useRouter } from "next/navigation"
 import { ChevronDown, Download, Rocket } from "lucide-react"
-import { startTransition, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import {
   ActionButton,
   ErrorDetails,
   FileButton,
-  Pill,
-  useTransitionName,
+  Indicator,
 } from "@zeroko/ui/components/action"
 import { Button } from "@zeroko/ui/components/button"
 import { confirm, toast } from "@zeroko/ui/components/feedback"
@@ -178,44 +177,70 @@ function VersionRow({
 
   return (
     <li className="border-b border-rule">
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={panel}
-        onClick={onToggle}
-        className="group flex w-full flex-col gap-2 py-4 text-left outline-none focus-visible:bg-secondary/40"
-      >
-        <span className="flex w-full flex-wrap items-center gap-x-4 gap-y-2">
-          <span
-            className={cn(
-              "font-serif text-xl transition-colors",
-              !d.active && "text-muted-foreground group-hover:text-foreground"
-            )}
+      <div className="relative flex flex-col gap-2 py-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-controls={panel}
+            onClick={onToggle}
+            className="group flex items-center gap-4 text-left outline-none after:absolute after:inset-0 focus-visible:after:bg-secondary/40"
           >
-            v{d.number}
-          </span>
-          {d.active && <Mono className="text-brand">live</Mono>}
-          {d.status === "failed" && (
-            <Mono className="text-destructive">failed</Mono>
-          )}
-          <Mono>{relative(d.created_at)}</Mono>
+            <span
+              className={cn(
+                "font-serif text-xl transition-colors",
+                !d.active && "text-muted-foreground group-hover:text-foreground"
+              )}
+            >
+              v{d.number}
+            </span>
+            {d.active && <Mono className="text-brand">live</Mono>}
+            {d.status === "failed" && (
+              <Mono className="text-destructive">failed</Mono>
+            )}
+            <Mono>{relative(d.created_at)}</Mono>
+          </button>
+          <div
+            className={cn(
+              "relative z-10 ml-auto flex items-center gap-2 transition-[opacity,translate] duration-300 ease-[cubic-bezier(0.2,0.7,0.2,1)]",
+              open
+                ? "translate-x-0 opacity-100"
+                : "pointer-events-none translate-x-2 opacity-0"
+            )}
+            inert={!open}
+          >
+            <Button variant="outline" size="sm" asChild>
+              <a
+                href={runner.bundleUrl(service, d.id)}
+                download
+                title="The version as one file, to deploy it again here or elsewhere"
+              >
+                <Download aria-hidden /> Download
+              </a>
+            </Button>
+            {d.status === "ready" && !d.active && (
+              <ActionButton size="sm" pending="Deploying" run={onActivate}>
+                <Rocket aria-hidden /> Make it live
+              </ActionButton>
+            )}
+          </div>
           <ChevronDown
             aria-hidden
             className={cn(
-              "ml-auto size-4 text-muted-foreground transition-transform duration-300 group-hover:text-foreground",
+              "pointer-events-none size-4 text-muted-foreground transition-transform duration-300",
               open && "rotate-180"
             )}
           />
-        </span>
-        <span className="flex flex-wrap gap-x-5 gap-y-1">
+        </div>
+        <div className="pointer-events-none flex flex-wrap gap-x-5 gap-y-1">
           {m?.main && <Mono className="text-foreground">{m.main}</Mono>}
           {bindings.length > 0 && <Mono>{bindings.join(", ")}</Mono>}
           {!!m?.crons?.length && (
             <Mono>{m.crons.map((c) => c.schedule).join(", ")}</Mono>
           )}
           <Mono className="text-faint">{d.id}</Mono>
-        </span>
-      </button>
+        </div>
+      </div>
       {d.error && <ErrorDetails error={d.error} className="-mt-1 pb-4" />}
       <div
         id={panel}
@@ -234,25 +259,7 @@ function VersionRow({
               ) : (
                 <p className="h-24 animate-pulse rounded-lg border bg-field" />
               )}
-              <div className="flex flex-wrap items-center gap-2">
-                <Button variant="outline" size="sm" asChild>
-                  <a
-                    href={runner.bundleUrl(service, d.id)}
-                    download
-                    title="The version as one file, to deploy it again here or elsewhere"
-                  >
-                    <Download aria-hidden /> Download
-                  </a>
-                </Button>
-                {d.status === "ready" && !d.active && (
-                  <ActionButton size="sm" pending="Deploying" run={onActivate}>
-                    <Rocket aria-hidden /> Make it live
-                  </ActionButton>
-                )}
-                {d.active && (
-                  <Mono className="ml-1">This is the live version.</Mono>
-                )}
-              </div>
+              {d.active && <Mono>This is the live version.</Mono>}
             </div>
           )}
         </div>
@@ -267,18 +274,18 @@ function SourceView({ source }: { source: Source }) {
     a === source.main ? -1 : b === source.main ? 1 : a.localeCompare(b)
   )
   const [file, setFile] = useState(names[0] ?? "")
-  const pill = useTransitionName("file")
   const text = source.files[file]
   return (
     <div className="flex flex-col gap-2">
       {names.length > 1 && (
-        <div className="flex flex-wrap gap-1">
+        <div className="relative flex flex-wrap gap-1">
+          <Indicator />
           {names.map((n) => (
             <button
               key={n}
               type="button"
               aria-pressed={n === file}
-              onClick={() => startTransition(() => setFile(n))}
+              onClick={() => setFile(n)}
               className={cn(
                 "relative rounded-sm px-2 py-0.5 font-mono text-xs transition-colors",
                 n === file
@@ -286,8 +293,7 @@ function SourceView({ source }: { source: Source }) {
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
-              {n === file && <Pill name={pill} />}
-              <span className="relative">{n}</span>
+              {n}
             </button>
           ))}
         </div>
