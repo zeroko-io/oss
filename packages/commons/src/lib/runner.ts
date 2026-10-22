@@ -37,6 +37,15 @@ export type Service = {
   status: ServiceStatus
   version?: number
   latest?: Deployment
+  traffic?: Traffic // when listed with a period
+}
+
+export type Traffic = {
+  requests: number
+  errors: number
+  exceptions: number
+  outbound: number
+  outbound_errors: number
 }
 
 export type Process = {
@@ -247,7 +256,10 @@ export class Runner {
 
   private svc = (name: string, rest = "") => `/api/services/${enc(name)}${rest}`
 
-  services = () => this.call<Service[]>("/api/services")
+  /** The services; with a period, each with its traffic over it (runners
+   * from before that leave traffic out). */
+  services = (period?: Period) =>
+    this.call<Service[]>(`/api/services${period ? `?period=${period}` : ""}`)
   service = (name: string) => this.call<ServiceDetail>(this.svc(name))
   createService = (name: string) =>
     this.send<Service>("POST", "/api/services", { name })

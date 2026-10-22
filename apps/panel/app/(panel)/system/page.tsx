@@ -4,7 +4,7 @@ import { bytesParts, duration } from "@zeroko-io/commons/lib/format"
 import { AutoRefresh } from "@zeroko-io/commons/components/auto-refresh"
 import { Page } from "@zeroko-io/commons/components/page"
 import { SettingsForm } from "@/components/settings-form"
-import { runner } from "@/lib/runner"
+import { loadSettings, loadSystem, runner } from "@/lib/runner"
 import { panelVersion } from "@/lib/updates"
 import { requireSession } from "@/lib/session"
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "System" }
 export default async function SystemPage() {
   await requireSession()
   const r = runner()
-  const [system, settings] = await Promise.all([r.system(), r.settings()])
+  const [system, settings] = await Promise.all([loadSystem(), loadSettings()])
   const [data, dataUnit] = bytesParts(system.data_bytes)
   const [free, freeUnit] = bytesParts(system.disk.free)
   return (

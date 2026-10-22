@@ -3,7 +3,7 @@ import { PageHeader } from "@zeroko-io/commons/components/ledger"
 
 import { Page } from "@zeroko-io/commons/components/page"
 import { SubTabs } from "@zeroko-io/commons/components/navigation"
-import { runner } from "@/lib/runner"
+import { loadSettings, loadSystem, runner } from "@/lib/runner"
 import { updates } from "@/lib/updates"
 import { requireSession } from "@/lib/session"
 
@@ -14,7 +14,7 @@ export default async function SystemLayout({
 }) {
   await requireSession()
   const r = runner()
-  const [settings, system] = await Promise.all([r.settings(), r.system()])
+  const [settings, system] = await Promise.all([loadSettings(), loadSystem()])
   const news = await updates(system.version)
   return (
     <Page>

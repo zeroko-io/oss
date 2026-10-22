@@ -9,7 +9,7 @@ import { Page, ServiceName } from "@zeroko-io/commons/components/page"
 import { ServiceActions } from "@zeroko-io/commons/views/service/header"
 import { ServiceStatus } from "@zeroko-io/commons/views/service-status"
 import { SubTabs } from "@zeroko-io/commons/components/navigation"
-import { runner } from "@/lib/runner"
+import { loadService } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 
 export default async function ServiceLayout(
@@ -17,12 +17,10 @@ export default async function ServiceLayout(
 ) {
   await requireSession()
   const name = decodeURIComponent((await props.params).name)
-  const service = await runner()
-    .service(name)
-    .catch((err) => {
-      if (err instanceof RunnerError && err.status === 404) notFound()
-      throw err
-    })
+  const service = await loadService(name).catch((err) => {
+    if (err instanceof RunnerError && err.status === 404) notFound()
+    throw err
+  })
   const base = `/services/${encodeURIComponent(service.name)}`
   return (
     <Page>

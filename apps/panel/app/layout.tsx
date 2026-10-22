@@ -3,7 +3,11 @@ import { Geist, Geist_Mono, Lora } from "next/font/google"
 import { cookies } from "next/headers"
 
 import "@zeroko-io/commons/globals.css"
-import { parseTheme, THEME_COOKIE, themeAttribute } from "@zeroko-io/commons/lib/theme"
+import {
+  parseTheme,
+  THEME_COOKIE,
+  themeAttribute,
+} from "@zeroko-io/commons/lib/theme"
 import { cn } from "@zeroko-io/commons/lib/utils"
 
 const sans = Geist({ subsets: ["latin"], variable: "--font-sans" })

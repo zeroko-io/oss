@@ -308,28 +308,6 @@ function TabLink({
   )
 }
 
-function SideLink({
-  active,
-  asChild,
-  className,
-  ...props
-}: React.ComponentProps<"a"> & { active?: boolean; asChild?: boolean }) {
-  const Comp = asChild ? Slot.Root : "a"
-  return (
-    <Comp
-      aria-current={active ? "page" : undefined}
-      className={cn(
-        "border-l py-1.5 pl-3 no-underline",
-        active
-          ? "border-brand text-foreground"
-          : "text-muted-foreground hover:text-foreground",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
 type LogTone = "info" | "brand" | "warn" | "error" | "idle"
 
 const logTone: Record<LogTone, string> = {
@@ -420,7 +398,6 @@ export {
   Mono,
   PageHeader,
   SectionTitle,
-  SideLink,
   Stat,
   Stats,
   Status,

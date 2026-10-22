@@ -22,6 +22,21 @@ deploy services on it. Self-hosted next to the runner.
 The panel's server talks to the runner with the root token, which never
 reaches the browser. One admin signs in with a password.
 
+## Install
+
+The panel runs next to a runner; `docker-compose.yml` starts both:
+
+```sh
+cp .env.example .env    # set the token and the password
+docker compose up -d
+```
+
+The panel answers on port 3000 and services on port 8080. **Put a reverse
+proxy with TLS in front of both**: one host for the panel (say
+`panel.example.com`) and a wildcard for the services (`*.example.com`). Then
+sign in and set the domain in System. The runner's API stays inside the
+compose network; agents reach it through the panel's `/api`.
+
 ## Configure
 
 | Variable                | Meaning                                                        |
@@ -30,6 +45,9 @@ reaches the browser. One admin signs in with a password.
 | `ZEROKO_PANEL_PASSWORD` | The admin's password, 8 characters or more.                    |
 | `ZEROKO_RUNNER_URL`     | The runner's API. Default `http://localhost:8081`.             |
 | `ZEROKO_PANEL_URL`      | The panel's public address, when its proxy doesn't send `X-Forwarded-Host` and `X-Forwarded-Proto`. |
+
+The image is `ghcr.io/zeroko-io/oss` (`dev` follows `main`; releases are
+`X.Y.Z`, `X.Y` and `latest`), for amd64 and arm64.
 
 Changing the token or the password signs the admin out.
 

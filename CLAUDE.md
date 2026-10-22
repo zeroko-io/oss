@@ -59,3 +59,19 @@ npm run dev
 npm run typecheck && npm run lint && npm run build
 npx shadcn@latest add <component> -c apps/panel   # into packages/commons
 ```
+
+## Releases
+
+CI (`.github/workflows/ci.yml`) works like the runner's. On `main` (and
+pull requests) it type-checks, lints, checks formatting, builds the image and
+checks that it starts; on `main` it publishes it for amd64 and arm64 as
+`sha-<commit>` and, while the commit is `main`'s newest, `dev`. The image's
+last stage only copies files, so arm64 needs no emulation: keep it so.
+
+Versions come from git: `git describe` of the `vX.Y.Z` tags, passed to the
+build as `VERSION`. To release: turn `## Unreleased` in `CHANGELOG.md` into
+`## X.Y.Z`, commit, tag `vX.Y.Z` and push both at once
+(`git push --atomic origin main vX.Y.Z`). Once `main`'s run of the commit
+passes, the tag's run names that image `X.Y.Z`, `X.Y` and `latest`,
+publishes `@zeroko-io/commons` `X.Y.Z` to GitHub Packages and makes the
+GitHub release from the changelog.

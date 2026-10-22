@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 
 import { Page } from "@zeroko-io/commons/components/page"
 import { DataExplorer } from "@zeroko-io/commons/views/service/data"
-import { runner } from "@/lib/runner"
+import { loadService, runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = { title: "Data" }
@@ -14,7 +14,7 @@ export default async function DataPage(
   const name = decodeURIComponent((await props.params).name)
   const r = runner()
   const [service, stores] = await Promise.all([
-    r.service(name),
+    loadService(name),
     r.storage(name),
   ])
   return (

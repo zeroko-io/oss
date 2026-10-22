@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 
 import { Page } from "@zeroko-io/commons/components/page"
 import { ServiceSettings } from "@zeroko-io/commons/views/service/settings"
-import { runner } from "@/lib/runner"
+import { loadService, loadSettings, runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = { title: "Service settings" }
@@ -14,9 +14,9 @@ export default async function ServiceSettingsPage(
   const name = decodeURIComponent((await props.params).name)
   const r = runner()
   const [service, secrets, settings] = await Promise.all([
-    r.service(name),
+    loadService(name),
     r.secrets(name),
-    r.settings(),
+    loadSettings(),
   ])
   return (
     <Page>

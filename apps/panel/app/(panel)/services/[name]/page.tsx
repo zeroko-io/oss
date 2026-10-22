@@ -25,7 +25,7 @@ import type { LogEntry } from "@zeroko-io/commons/lib/runner"
 import { TopLink } from "@zeroko-io/commons/components/navigation"
 import { Page } from "@zeroko-io/commons/components/page"
 import { RunCron } from "@zeroko-io/commons/views/service/overview"
-import { runner } from "@/lib/runner"
+import { loadService, runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 
 export async function generateMetadata(
@@ -53,7 +53,7 @@ export default async function ServiceOverview(
   const name = decodeURIComponent((await props.params).name)
   const r = runner()
   const [service, logs] = await Promise.all([
-    r.service(name),
+    loadService(name),
     r.logs(name, { limit: 12 }),
   ])
   const d = service.deployment

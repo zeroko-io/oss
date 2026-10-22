@@ -6,7 +6,7 @@ import { TopLink } from "@zeroko-io/commons/components/navigation"
 import { AutoRefresh } from "@zeroko-io/commons/components/auto-refresh"
 import { Page } from "@zeroko-io/commons/components/page"
 import { NewService, ServicesTable } from "@zeroko-io/commons/views/services"
-import { publicUrl, runner } from "@/lib/runner"
+import { loadSettings, loadSystem, publicUrl, runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = { title: "Services" }
@@ -24,19 +24,28 @@ export default async function ServicesPage() {
   await requireSession()
   const r = runner()
   const [services, system, settings, base] = await Promise.all([
-    r.services(),
-    r.system(),
-    r.settings(),
+    r.services("24h"),
+    loadSystem(),
+    loadSettings(),
     publicUrl(),
   ])
-  const metrics = await Promise.all(
-    services.map((s) => r.metrics(s.name).catch(() => null))
-  )
+  // One call for every service's traffic; a runner too old for it gets
+  // asked service by service.
+  const traffic = services.every((s) => s.traffic)
+    ? services.map((s) => s.traffic)
+    : await Promise.all(
+        services.map((s) =>
+          r.metrics(s.name).then(
+            (m) => m.totals,
+            () => undefined
+          )
+        )
+      )
   const requests = Object.fromEntries(
-    services.map((s, i) => [s.id, metrics[i]?.totals.requests ?? 0])
+    services.map((s, i) => [s.id, traffic[i]?.requests ?? 0])
   )
-  const total = metrics.reduce((n, m) => n + (m?.totals.requests ?? 0), 0)
-  const errors = metrics.reduce((n, m) => n + (m?.totals.errors ?? 0), 0)
+  const total = traffic.reduce((n, t) => n + (t?.requests ?? 0), 0)
+  const errors = traffic.reduce((n, t) => n + (t?.errors ?? 0), 0)
   const [disk, diskUnit] = bytesParts(system.data_bytes)
   const running = services.filter((s) => s.status === "running").length
   const skill = `${base}/skill.md`
