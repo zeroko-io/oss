@@ -1,0 +1,10 @@
+{
+  "extends": "@zeroko/typescript-config/react-library.json",
+  "compilerOptions": {
+    "paths": {
+      "@zeroko/ui/*": ["./src/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
+}
