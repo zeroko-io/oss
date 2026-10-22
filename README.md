@@ -76,6 +76,13 @@ npm run dev        # the panel at http://localhost:3000
 npm run typecheck && npm run lint && npm run build
 ```
 
+`@zeroko-io/commons` is published to GitHub Packages: `dev` follows `main`,
+releases are `X.Y.Z`. To use it from another repository, map the scope in
+its `.npmrc` (`@zeroko-io:registry=https://npm.pkg.github.com`) and give
+npm a token that can read the package (`read:packages`; in Actions, the
+`GITHUB_TOKEN` of a repository with access to it), then
+`npm install @zeroko-io/commons@dev`.
+
 Add a shadcn component to `@zeroko-io/commons`:
 
 ```sh
