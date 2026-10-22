@@ -3,7 +3,7 @@ name: ci
 # One build per commit, like the runner's. A push to main (or a pull request)
 # checks the code, builds the panel's image and checks that it starts; on main
 # it publishes the image as sha-<commit> and, while that commit is main's
-# newest, dev. A vX.Y.Z tag builds nothing: once main's run of that commit
+# newest, dev, and @zeroko-io/commons as a dev version. A vX.Y.Z tag builds nothing: once main's run of that commit
 # has passed, it names that same image X.Y.Z, X.Y, X (from 1.0) and latest,
 # publishes @zeroko-io/commons X.Y.Z to GitHub Packages and makes the GitHub
 # release from CHANGELOG.md.
@@ -50,6 +50,32 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npx prettier --check "apps/panel/**/*.{ts,tsx}" "packages/commons/src/**/*.{ts,tsx}"
+
+  # On main, @zeroko-io/commons as <version>-dev.<run> under the dev
+  # dist-tag, for cloud to follow main; a release publishes X.Y.Z as latest.
+  commons:
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          registry-url: https://npm.pkg.github.com
+          scope: "@zeroko-io"
+      - name: Publish @zeroko-io/commons under dev
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd packages/commons
+          base=$(node -p 'require("./package.json").version')
+          npm version "$base-dev.$GITHUB_RUN_NUMBER" --no-git-tag-version
+          npm publish --tag dev
 
   # The image is built on amd64 for both platforms: its last stage only
   # copies JavaScript, so arm64 needs no emulation.
