@@ -28,6 +28,8 @@ The open source panel for one Zeroko runner (`zeroko-io/runner`), and
 - What users and agents deploy are services (not apps).
 - `apps/panel/skill.md` is the agents' contract: update it with any change to
   what they can do.
+- No docs in this repository: every doc is on the website (zeroko.io/docs,
+  written in the private `zeroko-io/cloud`). Keep the README short.
 
 ## Layout
 
