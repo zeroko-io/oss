@@ -14,7 +14,15 @@ let push: (t: Toast) => void = () => {}
 let nextId = 0
 
 /** Says something happened; an error stays longer and reads as one. */
+/** Next navigates by throwing (redirect, notFound): from an action awaited
+ * in the browser, that reaches here and is no failure. */
+function navigating(err: unknown): boolean {
+  const digest = (err as { digest?: unknown } | null)?.digest
+  return typeof digest === "string" && digest.startsWith("NEXT_")
+}
+
 function toast(message: unknown, error = false) {
+  if (navigating(message)) return
   const text = message instanceof Error ? message.message : String(message)
   push({ id: ++nextId, text, error })
 }
