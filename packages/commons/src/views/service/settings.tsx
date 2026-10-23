@@ -14,7 +14,7 @@ import { Meter, Mono, SectionTitle } from "@zeroko-io/commons/components/ledger"
 import { formatBytes, plural, relative } from "@zeroko-io/commons/lib/format"
 import type { Secret, ServiceDetail } from "@zeroko-io/commons/lib/runner"
 
-import { useRunner } from "@zeroko-io/commons/components/runner"
+import { usePanelRoot, useRunner } from "@zeroko-io/commons/components/runner"
 
 /** A section of the settings: a title and what it is about on the left,
  * its controls on the right. */
@@ -393,6 +393,7 @@ function Transfer({ service }: { service: ServiceDetail }) {
 function Danger({ service }: { service: ServiceDetail }) {
   const runner = useRunner()
   const router = useRouter()
+  const root = usePanelRoot()
   return (
     <Section title="Danger zone" about="These can't be undone." danger>
       <div className="flex flex-col rounded-lg border border-destructive/35">
@@ -433,7 +434,10 @@ function Danger({ service }: { service: ServiceDetail }) {
               await runner.deleteService(service.name)
               toast(`${service.name} deleted`)
               window.scrollTo({ top: 0 })
-              router.push("/", { scroll: false, transitionTypes: ["nav-back"] })
+              router.push(root || "/", {
+                scroll: false,
+                transitionTypes: ["nav-back"],
+              })
             }}
           >
             Delete service

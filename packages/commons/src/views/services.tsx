@@ -12,7 +12,7 @@ import type { Service } from "@zeroko-io/commons/lib/runner"
 import { TopLink } from "@zeroko-io/commons/components/navigation"
 import { ServiceName } from "@zeroko-io/commons/components/page"
 import { ServiceStatus } from "@zeroko-io/commons/views/service-status"
-import { useRunner } from "@zeroko-io/commons/components/runner"
+import { usePanelRoot, useRunner } from "@zeroko-io/commons/components/runner"
 
 /** The services, with how many requests each answered in a day. */
 export function ServicesTable({
@@ -22,6 +22,7 @@ export function ServicesTable({
   services: Service[]
   requests: Record<string, number>
 }) {
+  const root = usePanelRoot()
   const [query, setQuery] = useState("")
   const q = query.trim().toLowerCase()
   const shown = services.filter(
@@ -59,7 +60,7 @@ export function ServicesTable({
               <Tr key={s.id} className="group relative">
                 <Td>
                   <TopLink
-                    href={`/services/${encodeURIComponent(s.name)}`}
+                    href={`${root}/services/${encodeURIComponent(s.name)}`}
                     transitionTypes={["nav-forward"]}
                     className="font-medium underline-offset-4 group-hover:underline after:absolute after:inset-0"
                   >
@@ -117,6 +118,7 @@ export function ServicesTable({
 /** Creates an empty service, for an agent or a deploy to fill. */
 export function NewService({ domain }: { domain: string }) {
   const runner = useRunner()
+  const root = usePanelRoot()
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -136,7 +138,7 @@ export function NewService({ domain }: { domain: string }) {
           const s = await runner.createService(name)
           toast(`${s.name} created`)
           window.scrollTo({ top: 0 })
-          router.push(`/services/${encodeURIComponent(s.name)}`, {
+          router.push(`${root}/services/${encodeURIComponent(s.name)}`, {
             scroll: false,
             transitionTypes: ["nav-forward"],
           })

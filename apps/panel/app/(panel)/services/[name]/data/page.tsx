@@ -1,25 +1,15 @@
 import type { Metadata } from "next"
+import { ServiceData } from "@zeroko-io/commons/screens/service"
 
-import { Page } from "@zeroko-io/commons/components/page"
-import { DataExplorer } from "@zeroko-io/commons/views/service/data"
-import { loadService, runner } from "@/lib/runner"
+import { runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = { title: "Data" }
 
-export default async function DataPage(
+export default async function ServiceDataPage(
   props: PageProps<"/services/[name]/data">
 ) {
   await requireSession()
   const name = decodeURIComponent((await props.params).name)
-  const r = runner()
-  const [service, stores] = await Promise.all([
-    loadService(name),
-    r.storage(name),
-  ])
-  return (
-    <Page>
-      <DataExplorer service={service} stores={stores} />
-    </Page>
-  )
+  return <ServiceData runner={runner()} root="" name={name} />
 }

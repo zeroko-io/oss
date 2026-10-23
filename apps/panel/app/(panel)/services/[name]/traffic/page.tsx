@@ -1,86 +1,16 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { Indicator } from "@zeroko-io/commons/components/action"
-import { RequestChart } from "@zeroko-io/commons/components/chart"
-import { Stat, Stats } from "@zeroko-io/commons/components/ledger"
-import { formatNumber, latency, rate } from "@zeroko-io/commons/lib/format"
-import type { Period } from "@zeroko-io/commons/lib/runner"
-import { cn } from "@zeroko-io/commons/lib/utils"
+import { ServiceTraffic } from "@zeroko-io/commons/screens/service"
 
-import { Page } from "@zeroko-io/commons/components/page"
 import { runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = { title: "Traffic" }
 
-const periods: Period[] = ["1h", "24h", "7d", "30d"]
-
-export default async function TrafficPage(
+export default async function ServiceTrafficPage(
   props: PageProps<"/services/[name]/traffic">
 ) {
   await requireSession()
   const name = decodeURIComponent((await props.params).name)
-  const asked = (await props.searchParams).period
-  const period = periods.find((p) => p === asked) ?? "24h"
-  const data = await runner().metrics(name, period)
-  const t = data.totals
-  const base = `/services/${encodeURIComponent(name)}/traffic`
-  return (
-    <Page>
-      <div className="flex items-center justify-end">
-        <nav
-          aria-label="Period"
-          className="relative inline-flex rounded-lg border p-0.5 font-mono text-[11px] tracking-[0.06em] uppercase"
-        >
-          <Indicator />
-          {periods.map((p) => (
-            <Link
-              key={p}
-              href={`${base}?period=${p}`}
-              scroll={false}
-              aria-current={p === period ? "page" : undefined}
-              className={cn(
-                "relative inline-flex h-6 items-center rounded-sm px-2.5 transition-colors",
-                p === period
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <span className="relative">{p}</span>
-            </Link>
-          ))}
-        </nav>
-      </div>
-      <Stats className="md:grid-cols-5">
-        <Stat label="Requests" value={formatNumber(t.requests)} />
-        <Stat
-          label="5xx errors"
-          value={formatNumber(t.errors)}
-          unit={t.requests ? rate(t.errors, t.requests) : undefined}
-        />
-        <Stat label="Exceptions" value={formatNumber(t.exceptions)} />
-        <Stat
-          label="Duration p95"
-          value={latency(t.p95)}
-          unit={t.requests ? `p50 ${latency(t.p50)}` : undefined}
-        />
-        <Stat
-          label="Outbound"
-          value={formatNumber(t.outbound)}
-          unit={
-            t.outbound_errors
-              ? `${formatNumber(t.outbound_errors)} failed`
-              : undefined
-          }
-        />
-      </Stats>
-      {t.requests > 0 ? (
-        <RequestChart key={period} data={data} />
-      ) : (
-        <p className="py-10 text-center font-serif text-muted-foreground italic">
-          No requests in this period.
-        </p>
-      )}
-    </Page>
-  )
+  const { period } = await props.searchParams
+  return <ServiceTraffic runner={runner()} root="" name={name} period={period} />
 }

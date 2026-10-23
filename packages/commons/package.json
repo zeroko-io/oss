@@ -21,7 +21,8 @@
     "./lib/*": "./src/lib/*.ts",
     "./components/*": "./src/components/*.tsx",
     "./views/*": "./src/views/*.tsx",
-    "./views/service/*": "./src/views/service/*.tsx"
+    "./views/service/*": "./src/views/service/*.tsx",
+    "./screens/*": "./src/screens/*.tsx"
   },
   "peerDependencies": {
     "next": ">=16.4.2",

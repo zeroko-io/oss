@@ -1,25 +1,15 @@
 import type { Metadata } from "next"
+import { ServiceVersions } from "@zeroko-io/commons/screens/service"
 
-import { Page } from "@zeroko-io/commons/components/page"
-import { Versions } from "@zeroko-io/commons/views/service/versions"
-import { loadService, runner } from "@/lib/runner"
+import { runner } from "@/lib/runner"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = { title: "Versions" }
 
-export default async function VersionsPage(
+export default async function ServiceVersionsPage(
   props: PageProps<"/services/[name]/versions">
 ) {
   await requireSession()
   const name = decodeURIComponent((await props.params).name)
-  const r = runner()
-  const [service, deployments] = await Promise.all([
-    loadService(name),
-    r.deployments(name),
-  ])
-  return (
-    <Page>
-      <Versions service={service} deployments={deployments} />
-    </Page>
-  )
+  return <ServiceVersions runner={runner()} root="" name={name} />
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
+import { ServiceLogsScreen } from "@zeroko-io/commons/screens/service"
 
-import { Page } from "@zeroko-io/commons/components/page"
-import { ServiceLogs } from "@zeroko-io/commons/views/service/logs"
 import { requireSession } from "@/lib/session"
 
 export const metadata: Metadata = { title: "Logs" }
@@ -11,9 +10,5 @@ export default async function LogsPage(
 ) {
   await requireSession()
   const name = decodeURIComponent((await props.params).name)
-  return (
-    <Page>
-      <ServiceLogs key={name} name={name} />
-    </Page>
-  )
+  return <ServiceLogsScreen name={name} />
 }
