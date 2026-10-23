@@ -3,6 +3,7 @@
 import * as React from "react"
 
 import { Button } from "@zeroko-io/commons/components/button"
+import { copyText } from "@zeroko-io/commons/lib/clipboard"
 
 /** A button that copies text and says so for a moment. */
 function CopyButton({
@@ -20,7 +21,7 @@ function CopyButton({
     <Button
       type="button"
       onClick={() =>
-        navigator.clipboard.writeText(text).then(() => setCopied(true))
+        copyText(text).then(() => setCopied(true))
       }
       {...props}
     >

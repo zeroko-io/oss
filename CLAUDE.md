@@ -4,7 +4,7 @@
 
 The open source panel for one Zeroko runner (`zeroko-io/runner`), and
 `@zeroko-io/commons`, the look and components shared with the commercial panel
-(`zeroko-io/cloud`). Develop on Windows with Node and npm; no WSL.
+(`zeroko-io/cloud`). Develop with Node and npm.
 
 ## Principles
 
@@ -52,9 +52,12 @@ The open source panel for one Zeroko runner (`zeroko-io/runner`), and
   (`ledger.tsx`), feedback (toasts, confirm), actions, the log view, the
   chart, navigation (links that scroll first, sub-tabs), `page.tsx` (view
   transitions), `runner.tsx` (`RunnerProvider`, `useRunner`: how the views
-  reach the runner from the browser); `src/views`: the screens of a service,
-  the services table and tokens; `src/lib`: the runner client and types,
-  formats, the theme.
+  reach the runner from the browser, and `root`, where a panel's pages of
+  it start); `src/views`: the client pieces of a service, the services table
+  and tokens; `src/screens`: whole pages as server components (services, a
+  service's frame and tabs, tokens) that take a runner and a root, used by
+  both panels; `src/lib`: the runner client and types, the shared loaders,
+  formats, copying, the theme.
 - `packages/eslint-config`, `packages/typescript-config`: shared configs.
 
 ## Commands

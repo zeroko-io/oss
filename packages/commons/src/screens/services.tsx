@@ -22,11 +22,17 @@ export async function ServicesScreen({
   runner: r,
   root,
   skill,
+  kicker,
+  actions,
 }: {
   runner: Runner
   root: string
   /** The skill's address, for the first steps. */
   skill: string
+  /** A line over the title, as the team a panel shows. */
+  kicker?: React.ReactNode
+  /** The panel's own buttons, before New service. */
+  actions?: React.ReactNode
 }) {
   const [services, system, settings] = await Promise.all([
     r.services("24h"),
@@ -57,9 +63,15 @@ export async function ServicesScreen({
     <Page>
       <AutoRefresh />
       <PageHeader
+        kicker={kicker}
         title="Services"
         note={summary(services.length, running)}
-        actions={<NewService domain={settings.domain} />}
+        actions={
+          <>
+            {actions}
+            <NewService domain={settings.domain} />
+          </>
+        }
       />
       <Stats>
         <Stat label="Requests - 24h" value={formatNumber(total)} />

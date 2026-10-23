@@ -19,4 +19,8 @@ The first version of the open source panel.
 - Light and dark themes, view transitions, and a layout that fits phones.
 - `@zeroko-io/commons`: the look, components, views and runner client,
   shared with Zeroko's other panels as a workspace (not published).
+- Commons' screens: the services, a service's frame and tabs and the tokens
+  as server components that take a runner and the path a panel's pages
+  start at; `RunnerProvider` takes that path as `root`.
+- Copy buttons work on panels served over plain HTTP too.
 - A Docker image for amd64 and arm64, and a compose file with the runner.
