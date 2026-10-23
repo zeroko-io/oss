@@ -14,16 +14,16 @@ const colors = {
 
 const paths = markPaths.map((d) => `<path d="${d}"/>`).join("")
 
-/** The icon for browsers: the mark on a square that follows the system's
- * theme, warm paper or warm black, as the panels do. */
+/** The icon for browsers: the mark alone, on nothing, in the accent of the
+ * system's theme. Square, with the Z centered. */
 export const faviconSvg =
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">` +
-  `<style>rect{fill:${colors.light.ground}}path{fill:${colors.light.mark}}` +
-  `@media (prefers-color-scheme:dark){rect{fill:${colors.dark.ground}}path{fill:${colors.dark.mark}}}</style>` +
-  `<rect width="1000" height="1000"/>${paths}</svg>`
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="150 150 700 700">` +
+  `<style>path{fill:${colors.light.mark}}` +
+  `@media (prefers-color-scheme:dark){path{fill:${colors.dark.mark}}}</style>` +
+  `${paths}</svg>`
 
-/** The icon in one theme, for places that can't follow the system: a
- * phone's home screen, a social card. */
+/** The mark on a square in one theme, for places that need a ground: a
+ * phone's home screen fills a transparent icon with black. */
 export function tileSvg(theme: "light" | "dark"): string {
   const c = colors[theme]
   return (
