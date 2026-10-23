@@ -5,6 +5,32 @@ import { ViewTransition } from "react"
 import { cn } from "cn"
 import { Slot } from "radix-ui"
 
+import { markPaths } from "@zeroko-io/commons/lib/brand"
+
+/** Zeroko's mark alone, in the accent: it follows the theme with the brand
+ * token. Cropped to the Z, so it sits on a line of text. */
+function Mark({
+  className,
+  title,
+}: {
+  className?: string
+  title?: string
+}) {
+  return (
+    <svg
+      viewBox="150 200 700 600"
+      role={title ? "img" : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
+      className={cn("h-3.5 w-auto shrink-0 fill-brand", className)}
+    >
+      {markPaths.map((d) => (
+        <path key={d} d={d} />
+      ))}
+    </svg>
+  )
+}
+
 function Logo({ className }: { className?: string }) {
   return (
     <span
@@ -13,7 +39,7 @@ function Logo({ className }: { className?: string }) {
         className
       )}
     >
-      <span aria-hidden className="size-3 bg-brand" />
+      <Mark />
       zeroko
     </span>
   )
@@ -388,6 +414,7 @@ function Meter({
 }
 
 export {
+  Mark,
   Fact,
   Facts,
   FieldRow,

@@ -20,6 +20,7 @@ const serif = Lora({
 
 export const metadata: Metadata = {
   title: { default: "Zeroko", template: "%s - Zeroko" },
+  icons: { icon: { url: "/icon.svg", type: "image/svg+xml" } },
 }
 
 export const viewport: Viewport = {
