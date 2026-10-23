@@ -3,10 +3,9 @@ name: ci
 # One build per commit, like the runner's. A push to main (or a pull request)
 # checks the code, builds the panel's image and checks that it starts; on main
 # it publishes the image as sha-<commit> and, while that commit is main's
-# newest, dev, and @zeroko-io/commons as a dev version. A vX.Y.Z tag builds nothing: once main's run of that commit
-# has passed, it names that same image X.Y.Z, X.Y, X (from 1.0) and latest,
-# publishes @zeroko-io/commons X.Y.Z to GitHub Packages and makes the GitHub
-# release from CHANGELOG.md.
+# newest, dev. A vX.Y.Z tag builds nothing: once main's run of that commit
+# has passed, it names that same image X.Y.Z, X.Y, X (from 1.0) and latest
+# and makes the GitHub release from CHANGELOG.md.
 #
 # The version is git's: `git describe` of the vX.Y.Z tags, so a release
 # pushes its commit and its tag together (git push --atomic origin main
@@ -50,36 +49,6 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npx prettier --check "apps/panel/**/*.{ts,tsx}" "packages/commons/src/**/*.{ts,tsx}"
-
-  # On main, @zeroko-io/commons as <version>-dev.<run> under the dev
-  # dist-tag, for cloud to follow main; a release publishes X.Y.Z as latest.
-  commons:
-    needs: check
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version: lts/*
-          registry-url: https://npm.pkg.github.com
-          scope: "@zeroko-io"
-      - name: Publish @zeroko-io/commons under dev
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd packages/commons
-          # The version is written into package.json directly: inside the
-          # workspace, npm version would also update the lockfile, and the
-          # panel's "*" range doesn't take a prerelease, so npm would look for
-          # one in the registry.
-          v="$(node -p 'require("./package.json").version')-dev.$GITHUB_RUN_NUMBER"
-          node -e 'const fs = require("fs"); const p = JSON.parse(fs.readFileSync("package.json")); p.version = process.argv[1]; fs.writeFileSync("package.json", JSON.stringify(p, null, 2))' "$v"
-          npm publish --tag dev
 
   # The image is built on amd64 for both platforms: its last stage only
   # copies JavaScript, so arm64 needs no emulation.
@@ -164,7 +133,7 @@ jobs:
     permissions:
       actions: read
       contents: write
-      packages: write
+      packages: write # the image's tags
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -214,18 +183,6 @@ jobs:
           [[ "$v" == 0.* ]] || tags+=(-t "$image:${v%%.*}")
           docker buildx imagetools create "${tags[@]}" "$image:sha-$GITHUB_SHA"
           docker buildx imagetools inspect "$image:$v"
-      - uses: actions/setup-node@v7
-        with:
-          node-version: lts/*
-          registry-url: https://npm.pkg.github.com
-          scope: "@zeroko-io"
-      - name: Publish @zeroko-io/commons
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          cd packages/commons
-          node -e 'const fs = require("fs"); const p = JSON.parse(fs.readFileSync("package.json")); p.version = process.argv[1]; fs.writeFileSync("package.json", JSON.stringify(p, null, 2))' "${{ steps.check.outputs.version }}"
-          npm publish
       - name: GitHub release
         run: |
           v="${{ steps.check.outputs.version }}"

@@ -43,7 +43,7 @@ function parse(v: string): { nums: number[]; pre: boolean } | null {
 }
 
 /** Whether release a is newer than the version b runs. */
-export function newer(a: string, b: string): boolean {
+function newer(a: string, b: string): boolean {
   const x = parse(a)
   const y = parse(b)
   if (!x || !y) return false

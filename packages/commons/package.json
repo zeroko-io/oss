@@ -1,6 +1,7 @@
 {
   "name": "@zeroko-io/commons",
   "version": "0.1.0",
+  "private": true,
   "description": "Zeroko's look, components, views and runner client, shared by its panels.",
   "type": "module",
   "license": "MIT",
@@ -9,14 +10,6 @@
     "url": "https://github.com/zeroko-io/oss.git",
     "directory": "packages/commons"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
-  "files": [
-    "src",
-    "postcss.config.mjs",
-    "LICENSE"
-  ],
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",

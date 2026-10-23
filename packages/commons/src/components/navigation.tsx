@@ -39,7 +39,7 @@ export function TopLink({
 
 /** Scrolls up to an element if the page is scrolled past it, so tabs stay
  * in view when what is under them changes length. */
-export function scrollUpTo(el: Element | null, offset = 72) {
+function scrollUpTo(el: Element | null, offset = 72) {
   if (!el) return
   const top = el.getBoundingClientRect().top + window.scrollY - offset
   if (window.scrollY > top) window.scrollTo({ top })

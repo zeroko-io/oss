@@ -41,8 +41,12 @@ The open source panel for one Zeroko runner (`zeroko-io/runner`), and
 - Motion: pages enter through `<Page>` (React's `ViewTransition`); links
   into something pass `transitionTypes={["nav-forward"]}`, links back
   `["nav-back"]`. Keep animations short and honor reduced motion.
-- `packages/commons`: `@zeroko-io/commons`, published to GitHub Packages
-  for cloud. `src/styles/globals.css` (tokens); `src/components`: the look
+- `packages/commons`: `@zeroko-io/commons`, not published: the private
+  `zeroko-io/cloud` includes this repository as a submodule (at `oss/`) and
+  uses it as a workspace, pinned to a commit. This repository never needs
+  cloud; changes reach cloud only when it moves the pin. Keep commons'
+  exports stable, and note in `CHANGELOG.md` what changes for its users.
+  `src/styles/globals.css` (tokens); `src/components`: the look
   (`ledger.tsx`), feedback (toasts, confirm), actions, the log view, the
   chart, navigation (links that scroll first, sub-tabs), `page.tsx` (view
   transitions), `runner.tsx` (`RunnerProvider`, `useRunner`: how the views
@@ -72,6 +76,5 @@ Versions come from git: `git describe` of the `vX.Y.Z` tags, passed to the
 build as `VERSION`. To release: turn `## Unreleased` in `CHANGELOG.md` into
 `## X.Y.Z`, commit, tag `vX.Y.Z` and push both at once
 (`git push --atomic origin main vX.Y.Z`). Once `main`'s run of the commit
-passes, the tag's run names that image `X.Y.Z`, `X.Y` and `latest`,
-publishes `@zeroko-io/commons` `X.Y.Z` to GitHub Packages and makes the
-GitHub release from the changelog.
+passes, the tag's run names that image `X.Y.Z`, `X.Y` and `latest` and
+makes the GitHub release from the changelog.

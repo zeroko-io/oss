@@ -76,12 +76,10 @@ npm run dev        # the panel at http://localhost:3000
 npm run typecheck && npm run lint && npm run build
 ```
 
-`@zeroko-io/commons` is published to GitHub Packages: `dev` follows `main`,
-releases are `X.Y.Z`. To use it from another repository, map the scope in
-its `.npmrc` (`@zeroko-io:registry=https://npm.pkg.github.com`) and give
-npm a token that can read the package (`read:packages`; in Actions, the
-`GITHUB_TOKEN` of a repository with access to it), then
-`npm install @zeroko-io/commons@dev`.
+`@zeroko-io/commons` is not published: Zeroko's other panels include this
+repository as a git submodule and use it as a workspace, each pinned to a
+commit of it. Changes here reach them only when they move that pin, so keep
+commons' exports working, or say in `CHANGELOG.md` what changed.
 
 Add a shadcn component to `@zeroko-io/commons`:
 

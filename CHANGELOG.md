@@ -18,5 +18,5 @@ The first version of the open source panel.
   need only the panel's address and a token.
 - Light and dark themes, view transitions, and a layout that fits phones.
 - `@zeroko-io/commons`: the look, components, views and runner client,
-  shared with Zeroko's other panels.
+  shared with Zeroko's other panels as a workspace (not published).
 - A Docker image for amd64 and arm64, and a compose file with the runner.
