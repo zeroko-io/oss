@@ -2,7 +2,7 @@
 
 import Link, { useLinkStatus } from "next/link"
 import { usePathname } from "next/navigation"
-import { useRef } from "react"
+import { useLayoutEffect, useRef } from "react"
 import { TabLink, TabNav } from "@/components/ui/ledger"
 import { cn } from "@/lib/utils"
 
@@ -18,9 +18,14 @@ function plain(e: React.MouseEvent) {
   )
 }
 
-/** Goes to the top of the page first, then to another page. Next would
- * scroll after the new page is drawn, in the middle of the view transition,
- * so the page would slide from where the old one was scrolled to. */
+// Set by a TopLink's click, read when the new page commits.
+let toTop = false
+
+/** A link to another page that opens at its top. Next would scroll after
+ * the new page is drawn, in the middle of the view transition, and
+ * scrolling on the click would show the old page jump first: instead the
+ * new page goes to the top as it commits (ScrollReset), inside the
+ * transition, while the old one leaves from where it was. */
 export function TopLink({
   onClick,
   ...props
@@ -30,11 +35,23 @@ export function TopLink({
       scroll={false}
       onClick={(e) => {
         onClick?.(e)
-        if (plain(e)) window.scrollTo({ top: 0 })
+        if (plain(e)) toTop = true
       }}
       {...props}
     />
   )
+}
+
+/** Puts a page a TopLink opened at its top, before it's painted. Back and
+ * forward keep the browser's own scroll. Once, in the root layout. */
+export function ScrollReset() {
+  const path = usePathname()
+  useLayoutEffect(() => {
+    if (!toTop) return
+    toTop = false
+    window.scrollTo({ top: 0, behavior: "instant" })
+  }, [path])
+  return null
 }
 
 /** Scrolls up to an element if the page is scrolled past it, so tabs stay

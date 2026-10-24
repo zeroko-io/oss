@@ -1,7 +1,6 @@
 // A service, as pages of a panel: the frame around its tabs, and each tab.
 // Server components: the panel passes its runner (with its token), where its
 // pages start, and the service's name.
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowRight } from "lucide-react"
 import { Indicator } from "@/components/ui/action"
@@ -315,7 +314,7 @@ export async function ServiceTraffic({
         >
           <Indicator />
           {periods.map((p) => (
-            <Link
+            <TopLink
               key={p}
               href={`${base}?period=${p}`}
               scroll={false}
@@ -328,7 +327,7 @@ export async function ServiceTraffic({
               )}
             >
               <span className="relative">{p}</span>
-            </Link>
+            </TopLink>
           ))}
         </nav>
       </div>

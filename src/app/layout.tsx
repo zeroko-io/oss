@@ -5,6 +5,7 @@ import { cookies } from "next/headers"
 import "./globals.css"
 import { parseTheme, THEME_COOKIE, themeAttribute } from "@/lib/theme"
 import { cn } from "@/lib/utils"
+import { ScrollReset } from "@/components/ui/navigation"
 
 const sans = Geist({ subsets: ["latin"], variable: "--font-sans" })
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
@@ -45,7 +46,10 @@ export default async function RootLayout({
       )}
     >
       {/* Browser extensions add attributes to <body> before React loads. */}
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <ScrollReset />
+        {children}
+      </body>
     </html>
   )
 }
