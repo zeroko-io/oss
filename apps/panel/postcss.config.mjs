@@ -1,1 +1,0 @@
-export { default } from "@zeroko-io/commons/postcss.config";

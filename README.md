@@ -1,4 +1,4 @@
-# Zeroko OSS
+# Zeroko Panel
 
 The open source panel of Zeroko: a web app to manage one
 [runner](https://github.com/zeroko-io/runner), and the skill agents read to
@@ -15,7 +15,7 @@ panel, the runner and the API. What changed is in the
 
 ## Develop
 
-Run a runner, then put its token in `apps/panel/.env.local`
+Run a runner, then put its token in `.env.local`
 (`ZEROKO_TOKEN`, `ZEROKO_PANEL_PASSWORD`, `ZEROKO_RUNNER_URL`):
 
 ```sh
@@ -23,10 +23,5 @@ npm install
 npm run dev        # the panel at http://localhost:3000
 npm run typecheck && npm run lint && npm run build
 ```
-
-`packages/commons` (`@zeroko-io/commons`) is Zeroko's look, components and
-runner client, shared with Zeroko's other panels, which use it from this
-repository pinned to a commit: keep its exports working, or say in
-`CHANGELOG.md` what changed.
 
 MIT licensed.

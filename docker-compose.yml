@@ -20,7 +20,7 @@ services:
       - runner-data:/data
 
   panel:
-    image: ghcr.io/zeroko-io/oss:${PANEL_TAG:-dev}
+    image: ghcr.io/zeroko-io/panel:${PANEL_TAG:-dev}
     restart: unless-stopped
     environment:
       ZEROKO_TOKEN: ${ZEROKO_TOKEN}

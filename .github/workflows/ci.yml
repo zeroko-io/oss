@@ -48,7 +48,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run lint
-      - run: npx prettier --check "apps/panel/**/*.{ts,tsx}" "packages/commons/src/**/*.{ts,tsx}"
+      - run: npx prettier --check "src/**/*.{ts,tsx}"
 
   # The image is built on amd64 for both platforms: its last stage only
   # copies JavaScript, so arm64 needs no emulation.
@@ -187,7 +187,7 @@ jobs:
         run: |
           v="${{ steps.check.outputs.version }}"
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release edit "$GITHUB_REF_NAME" --title "Zeroko OSS $v" --notes-file notes.md
+            gh release edit "$GITHUB_REF_NAME" --title "Zeroko Panel $v" --notes-file notes.md
           else
-            gh release create "$GITHUB_REF_NAME" --verify-tag --title "Zeroko OSS $v" --notes-file notes.md
+            gh release create "$GITHUB_REF_NAME" --verify-tag --title "Zeroko Panel $v" --notes-file notes.md
           fi

@@ -1,10 +1,11 @@
 @AGENTS.md
 
-# Zeroko OSS
+# Zeroko Panel
 
-The open source panel for one Zeroko runner (`zeroko-io/runner`), and
-`@zeroko-io/commons`, the look and components shared with the commercial panel
-(`zeroko-io/cloud`). Develop with Node and npm.
+The open source panel for one Zeroko runner (`zeroko-io/runner`): a Next.js
+app, self-hosted next to the runner. It refers to no other repository;
+Zeroko Cloud (private) keeps its own copy of the look and the views. Develop
+with Node and npm.
 
 ## Principles
 
@@ -15,50 +16,41 @@ The open source panel for one Zeroko runner (`zeroko-io/runner`), and
   checks the session and the origin and adds the token, so the runner's own
   errors reach the page (as toasts). Server Actions are only for signing in
   and out.
-- Anything both panels need (theme, components, views of a service, the
-  runner's API client) goes in `packages/commons`, not in `apps/panel`.
-  Views take the runner from `useRunner()`, never a panel's own module.
+- Views take the runner from `useRunner()`, never a module of the panel's
+  own.
 - One look, "Ledger": colors, radii and fonts are the tokens in
-  `packages/commons/src/styles/globals.css`, each `light-dark()`: the theme follows
-  the system unless the `zeroko_theme` cookie fixes it. Hairline rules, not
-  cards; a serif (Lora) for titles and figures, Geist for the interface,
-  Geist Mono for labels, names and logs. Components use the tokens, never raw
-  colors. The accent is one token, `--brand`, and may still change.
-  Customize shadcn components in place rather than wrapping them.
+  `src/app/globals.css`, each `light-dark()`: the theme follows the system
+  unless the `zeroko_theme` cookie fixes it. Hairline rules, not cards; a
+  serif (Lora) for titles and figures, Geist for the interface, Geist Mono
+  for labels, names and logs. Components use the tokens, never raw colors.
+  The accent is one token, `--brand`. Customize shadcn components in place
+  rather than wrapping them.
 - What users and agents deploy are services (not apps).
-- `apps/panel/skill.md` is the agents' contract: update it with any change to
-  what they can do.
+- `skill.md` is the agents' contract: update it with any change to what
+  they can do.
 - No docs in this repository: every doc is on the website (zeroko.io/docs,
   written in the private `zeroko-io/cloud`). Keep the README short.
 
 ## Layout
 
-- `apps/panel`: Next.js (App Router) app. `lib/`: config from the
-  environment, the session, the runner client, the Server Actions.
-  `app/(panel)`: the signed-in pages; a service's and the system's tabs are
-  routes. `components/`: the client pieces of those pages.
-  `app/api/[...path]`: the runner's API passed through for agents, with their
-  own token. `app/runner-api/[...path]`: the same API for the panel's pages,
-  with the session. `app/skill.md`: the skill.
+- `src/app`: `(panel)` the signed-in pages (a service's and the system's
+  tabs are routes); `api/[...path]` the runner's API passed through for
+  agents, with their own token; `runner-api/[...path]` the same API for the
+  panel's pages, with the session; `skill.md` the skill (from `skill.md` at
+  the root).
+- `src/lib`: config from the environment, the session, the runner's client
+  (`runner.ts`) and the server's root-token runner (`runner-server.ts`), the
+  shared loaders, formats, the theme, the Server Actions.
+- `src/components/ui`: the look (`ledger.tsx`), feedback (toasts, confirm),
+  actions, the log view, the chart, navigation, `page.tsx` (view
+  transitions), `runner.tsx` (`RunnerProvider`, `useRunner`).
+  `src/components`: the panel's own client pieces.
+- `src/views`: the client pieces of a service, the services table and
+  tokens; `src/screens`: whole pages as server components (services, a
+  service's frame and tabs, tokens).
 - Motion: pages enter through `<Page>` (React's `ViewTransition`); links
   into something pass `transitionTypes={["nav-forward"]}`, links back
   `["nav-back"]`. Keep animations short and honor reduced motion.
-- `packages/commons`: `@zeroko-io/commons`, not published: the private
-  `zeroko-io/cloud` includes this repository as a submodule (at `oss/`) and
-  uses it as a workspace, pinned to a commit. This repository never needs
-  cloud; changes reach cloud only when it moves the pin. Keep commons'
-  exports stable, and note in `CHANGELOG.md` what changes for its users.
-  `src/styles/globals.css` (tokens); `src/components`: the look
-  (`ledger.tsx`), feedback (toasts, confirm), actions, the log view, the
-  chart, navigation (links that scroll first, sub-tabs), `page.tsx` (view
-  transitions), `runner.tsx` (`RunnerProvider`, `useRunner`: how the views
-  reach the runner from the browser, and `root`, where a panel's pages of
-  it start); `src/views`: the client pieces of a service, the services table
-  and tokens; `src/screens`: whole pages as server components (services, a
-  service's frame and tabs, tokens) that take a runner and a root, used by
-  both panels; `src/lib`: the runner client and types, the shared loaders,
-  formats, copying, the theme.
-- `packages/eslint-config`, `packages/typescript-config`: shared configs.
 
 ## Commands
 
@@ -66,7 +58,7 @@ The open source panel for one Zeroko runner (`zeroko-io/runner`), and
 npm install
 npm run dev
 npm run typecheck && npm run lint && npm run build
-npx shadcn@latest add <component> -c apps/panel   # into packages/commons
+npx shadcn@latest add <component>   # into src/components/ui
 ```
 
 ## Releases

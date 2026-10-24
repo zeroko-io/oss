@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- The repository is `zeroko-io/panel` (was `oss`), and the image
+  `ghcr.io/zeroko-io/panel`. It's one Next.js app with `src/`: the
+  `@zeroko-io/commons` package, the monorepo and turbo are gone; the look,
+  the runner's client and the views are in `src/components/ui`, `src/lib`,
+  `src/views` and `src/screens`.
 The first version of the open source panel.
 
 - One admin signs in with a password; the runner's root token stays on the
