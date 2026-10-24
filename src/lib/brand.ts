@@ -1,10 +1,10 @@
-// Zeroko's mark: a Z of two pieces that meet across a diagonal gap, on a
-// 1000 × 1000 square (the Z spans 150 to 850 across, 200 to 800 down). The
+// Zeroko's mark: a Z of two pieces that meet at the center, on a
+// 1000 × 1000 square (the Z spans 100 to 900 across, 157 to 843 down). The
 // one source of the logo's mark and the apps' icons.
 
 export const markPaths = [
-  "M750 200V279.289C750 292.55 744.732 305.268 735.355 314.645L650 400L550 500V400V300H391.421C364.9 300 339.464 310.536 320.711 329.289L250 400H150V300V200H750Z",
-  "M450 600V500L350 600L264.645 685.355C255.268 694.732 250 707.45 250 720.711V800H850V700V600H750L679.289 670.711C660.536 689.464 635.1 700 608.579 700H450V600Z",
+  "M785.714 157V247.654C785.714 262.816 779.694 277.356 768.978 288.077L557.143 500V271.333H375.91C345.6 271.333 316.531 283.379 295.098 304.821L214.286 385.667H100V157H785.714Z",
+  "M442.857 500L231.022 711.923C220.306 722.644 214.286 737.184 214.286 752.346V843H900V614.333H785.714L704.902 695.179C683.469 716.621 654.4 728.667 624.09 728.667H442.857V500Z",
 ]
 
 const colors = {
@@ -15,9 +15,9 @@ const colors = {
 const paths = markPaths.map((d) => `<path d="${d}"/>`).join("")
 
 /** The icon for browsers: the mark alone, on nothing, in the accent of the
- * system's theme. Square, with the Z centered. */
+ * system's theme. The whole square, so the Z keeps its margin. */
 export const faviconSvg =
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="150 150 700 700">` +
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">` +
   `<style>path{fill:${colors.light.mark}}` +
   `@media (prefers-color-scheme:dark){path{fill:${colors.dark.mark}}}</style>` +
   `${paths}</svg>`

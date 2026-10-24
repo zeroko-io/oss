@@ -12,7 +12,7 @@ import { markPaths } from "@/lib/brand"
 function Mark({ className, title }: { className?: string; title?: string }) {
   return (
     <svg
-      viewBox="150 200 700 600"
+      viewBox="100 157 800 686"
       role={title ? "img" : undefined}
       aria-label={title}
       aria-hidden={title ? undefined : true}
